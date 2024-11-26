@@ -110,10 +110,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel_Diagonal = new javax.swing.JLabel();
         jLabel_Registrarse = new javax.swing.JLabel();
         jTextField_BarraBusqueda = new javax.swing.JTextField();
+        btnSubirVideo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel_Inicia_Sesion.setText("Inicia Sesión");
+        jLabel_Inicia_Sesion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel_Inicia_SesionMouseClicked(evt);
+            }
+        });
 
         jLabel_Diagonal.setText("/");
 
@@ -126,6 +132,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        btnSubirVideo.setText("Subir Video");
+        btnSubirVideo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSubirVideoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
         PanelPrincipal.setLayout(PanelPrincipalLayout);
         PanelPrincipalLayout.setHorizontalGroup(
@@ -133,7 +146,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelPrincipalLayout.createSequentialGroup()
                 .addGap(346, 346, 346)
                 .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 332, Short.MAX_VALUE)
+                .addGap(122, 122, 122)
+                .addComponent(btnSubirVideo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
                 .addComponent(jLabel_Inicia_Sesion)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_Diagonal)
@@ -150,7 +165,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         .addComponent(jLabel_Inicia_Sesion)
                         .addComponent(jLabel_Diagonal)
                         .addComponent(jLabel_Registrarse))
-                    .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSubirVideo)))
                 .addContainerGap(774, Short.MAX_VALUE))
         );
 
@@ -171,6 +188,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void jTextField_BarraBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_BarraBusquedaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField_BarraBusquedaActionPerformed
+
+    private void jLabel_Inicia_SesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_Inicia_SesionMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jLabel_Inicia_SesionMouseClicked
+
+    private void btnSubirVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubirVideoActionPerformed
+        Ventana_SubirVideo form = new Ventana_SubirVideo();
+        form.setVisible(true);
+        dispose(); // Cierra la ventana actual (opcional)
+    }//GEN-LAST:event_btnSubirVideoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -209,6 +236,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelPrincipal;
+    private javax.swing.JButton btnSubirVideo;
     private javax.swing.JLabel jLabel_Diagonal;
     private javax.swing.JLabel jLabel_Inicia_Sesion;
     private javax.swing.JLabel jLabel_Registrarse;

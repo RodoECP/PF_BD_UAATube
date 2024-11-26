@@ -41,7 +41,9 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" pref="346" max="-2" attributes="0"/>
                   <Component id="jTextField_BarraBusqueda" min="-2" pref="553" max="-2" attributes="0"/>
-                  <EmptySpace pref="332" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="122" max="-2" attributes="0"/>
+                  <Component id="btnSubirVideo" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="120" max="32767" attributes="0"/>
                   <Component id="jLabel_Inicia_Sesion" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel_Diagonal" min="-2" max="-2" attributes="0"/>
@@ -61,7 +63,10 @@
                           <Component id="jLabel_Diagonal" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel_Registrarse" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jTextField_BarraBusqueda" alignment="0" min="-2" pref="31" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                          <Component id="jTextField_BarraBusqueda" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                          <Component id="btnSubirVideo" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace pref="774" max="32767" attributes="0"/>
               </Group>
@@ -73,6 +78,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Inicia Sesi&#xf3;n"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel_Inicia_SesionMouseClicked"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel_Diagonal">
           <Properties>
@@ -90,6 +98,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField_BarraBusquedaActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnSubirVideo">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Subir Video"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSubirVideoActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
