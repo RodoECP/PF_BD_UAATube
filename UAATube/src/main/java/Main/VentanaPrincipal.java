@@ -106,32 +106,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         PanelPrincipal = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jTextField_BarraBusqueda = new javax.swing.JTextField();
+        btnSubirVideo = new javax.swing.JButton();
         jLabel_Inicia_Sesion = new javax.swing.JLabel();
         jLabel_Diagonal = new javax.swing.JLabel();
         jLabel_Registrarse = new javax.swing.JLabel();
-        jTextField_BarraBusqueda = new javax.swing.JTextField();
-        btnSubirVideo = new javax.swing.JButton();
+        jLabel_Icono_UAATube = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel_Inicia_Sesion.setText("Inicia Sesión");
-        jLabel_Inicia_Sesion.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_Inicia_SesionMouseClicked(evt);
-            }
-        });
+        jPanel1.setBackground(new java.awt.Color(29, 113, 150));
 
-        jLabel_Diagonal.setText("/");
-
-        jLabel_Registrarse.setText("Registrarse");
-
-        jTextField_BarraBusqueda.setText("jTextField1");
+        jTextField_BarraBusqueda.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jTextField_BarraBusqueda.setText("Barra de Busqueda");
         jTextField_BarraBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField_BarraBusquedaActionPerformed(evt);
             }
         });
 
+        btnSubirVideo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         btnSubirVideo.setText("Subir Video");
         btnSubirVideo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,36 +134,80 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
-        PanelPrincipal.setLayout(PanelPrincipalLayout);
-        PanelPrincipalLayout.setHorizontalGroup(
-            PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelPrincipalLayout.createSequentialGroup()
-                .addGap(346, 346, 346)
+        jLabel_Inicia_Sesion.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel_Inicia_Sesion.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel_Inicia_Sesion.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Inicia_Sesion.setText("Inicia Sesión");
+        jLabel_Inicia_Sesion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel_Inicia_SesionMouseClicked(evt);
+            }
+        });
+
+        jLabel_Diagonal.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel_Diagonal.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel_Diagonal.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Diagonal.setText("/");
+
+        jLabel_Registrarse.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel_Registrarse.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel_Registrarse.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Registrarse.setText("Registrarse");
+
+        jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jLabel_Icono_UAATube)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
                 .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(122, 122, 122)
+                .addGap(48, 48, 48)
                 .addComponent(btnSubirVideo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addGap(48, 48, 48)
                 .addComponent(jLabel_Inicia_Sesion)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_Diagonal)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_Registrarse)
+                .addGap(17, 17, 17))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel_Inicia_Sesion)
+                            .addComponent(jLabel_Diagonal)
+                            .addComponent(jLabel_Registrarse)
+                            .addComponent(btnSubirVideo)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel_Icono_UAATube)))
+                .addContainerGap(640, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
+        PanelPrincipal.setLayout(PanelPrincipalLayout);
+        PanelPrincipalLayout.setHorizontalGroup(
+            PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PanelPrincipalLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         PanelPrincipalLayout.setVerticalGroup(
             PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PanelPrincipalLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel_Inicia_Sesion)
-                        .addComponent(jLabel_Diagonal)
-                        .addComponent(jLabel_Registrarse))
-                    .addGroup(PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSubirVideo)))
-                .addContainerGap(774, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -238,8 +277,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JButton btnSubirVideo;
     private javax.swing.JLabel jLabel_Diagonal;
+    private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_Inicia_Sesion;
     private javax.swing.JLabel jLabel_Registrarse;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField_BarraBusqueda;
     // End of variables declaration//GEN-END:variables
 }
