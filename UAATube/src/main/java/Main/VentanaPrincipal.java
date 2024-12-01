@@ -1,101 +1,192 @@
 package Main;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.GridFSDownloadStream;
+import com.mongodb.client.gridfs.model.GridFSFile;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
-/**
- *
- * @author pedro
- */
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 public class VentanaPrincipal extends javax.swing.JFrame {
 
-    /**
-     * Constructor de la clase VentanaPrincipal. Este método inicializa los
-     * componentes gráficos de la ventana principal, configura la interactividad
-     * de las etiquetas `Inicia Sesión` y `Registrarse`, y establece el
-     * comportamiento dinámico de la barra de búsqueda.
-     */
+    private JFXPanel jfxPanel;
+    private MediaPlayer mediaPlayer;
+    private GridFSBucket gridFSBucket;
+
+    // UI Controls
+    private JButton playButton, pauseButton, stopButton, rewindButton, fastForwardButton;
+    private JSlider volumeSlider;
+    private JPanel controlsPanel;
+
     public VentanaPrincipal() {
-        // Inicializa los componentes gráficos de la interfaz
+        connectToMongoDB();
         initComponents();
-
-        // Configura las etiquetas `Inicia Sesión` y `Registrarse` para que sean clicables.
-        // Cambia el cursor al pasar sobre ellas para indicar interactividad.
-        jLabel_Inicia_Sesion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel_Registrarse.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        /**
-         * Listener para jLabel_Inicia_Sesion. Cuando el usuario hace clic en la
-         * etiqueta "Inicia Sesión", se abre la ventana de inicio de sesión
-         * (Ventana_IniciarSesion). Opcionalmente, se cierra la ventana actual.
-         */
-        jLabel_Inicia_Sesion.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Abre la ventana de inicio de sesión
-                Ventana_IniciarSesion loginForm = new Ventana_IniciarSesion();
-                loginForm.setVisible(true);
-                dispose(); // Cierra la ventana actual (opcional)
-            }
-        });
-
-        /**
-         * Listener para jLabel_Registrarse. Cuando el usuario hace clic en la
-         * etiqueta "Registrarse", se abre la ventana de registro de usuario
-         * (Ventana_RegistrarUsuario). Opcionalmente, se cierra la ventana
-         * actual.
-         */
-        jLabel_Registrarse.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Abre la ventana de registro de usuario
-                Ventana_RegistrarUsuario registerForm = new Ventana_RegistrarUsuario();
-                registerForm.setVisible(true);
-                dispose(); // Cierra la ventana actual (opcional)
-            }
-        });
-
-        /**
-         * Configura el comportamiento dinámico de la barra de búsqueda. Se
-         * establece un texto placeholder inicial y se implementan las
-         * siguientes acciones: - Cuando el campo de texto recibe foco
-         * (focusGained), se elimina el texto placeholder. - Cuando el campo de
-         * texto pierde el foco (focusLost), se restablece el texto placeholder
-         * si el usuario no ingresó ningún texto.
-         */
-        jTextField_BarraBusqueda.addFocusListener(new FocusListener() {
-            // Texto inicial del placeholder
-            private final String placeholder = "Buscar...";
-
-            /**
-             * Acción ejecutada cuando el campo de texto recibe el foco. Si el
-             * contenido es igual al texto placeholder, se limpia el campo.
-             *
-             * @param e Evento de foco (FocusEvent).
-             */
-            public void focusGained(FocusEvent e) {
-                if (jTextField_BarraBusqueda.getText().equals(placeholder)) {
-                    jTextField_BarraBusqueda.setText("");
-                }
-            }
-
-            /**
-             * Acción ejecutada cuando el campo de texto pierde el foco. Si el
-             * campo está vacío, se restablece el texto placeholder.
-             *
-             * @param e Evento de foco (FocusEvent).
-             */
-            public void focusLost(FocusEvent e) {
-                if (jTextField_BarraBusqueda.getText().trim().isEmpty()) {
-                    jTextField_BarraBusqueda.setText(placeholder);
-                }
-            }
-        });
-
-        // Establece el texto inicial del campo de búsqueda.
-        jTextField_BarraBusqueda.setText("Buscar...");
+        initializeVideoPlayback();
+        loadVideoList();
+        addMediaControls();
     }
 
+    private void connectToMongoDB() {
+        MongoClient mongoClient = new MongoClient("localhost", 27017);
+        MongoDatabase database = mongoClient.getDatabase("UAATube");
+        gridFSBucket = GridFSBuckets.create(database);
+    }
+
+    private void initializeVideoPlayback() {
+        jfxPanel = new JFXPanel();
+        jPanel_ReproducirVideo.setLayout(new BorderLayout());
+        jPanel_ReproducirVideo.add(jfxPanel, BorderLayout.CENTER);
+
+        Platform.runLater(() -> {
+            StackPane root = new StackPane();
+            Scene scene = new Scene(root, jPanel_ReproducirVideo.getWidth(), jPanel_ReproducirVideo.getHeight());
+            jfxPanel.setScene(scene);
+
+            MediaView mediaView = new MediaView();
+            root.getChildren().add(mediaView);
+
+            mediaPlayer = null; // No video loaded initially
+        });
+    }
+
+    private void loadVideoList() {
+        List<String> videoNames = new ArrayList<>();
+        try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
+            while (cursor.hasNext()) {
+                GridFSFile file = cursor.next();
+                videoNames.add(file.getFilename());
+            }
+        }
+
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
+        jComboBox_ListaVideos.setModel(model);
+
+        jComboBox_ListaVideos.addActionListener(this::onVideoSelected);
+    }
+
+    private void onVideoSelected(ActionEvent e) {
+        String selectedVideo = (String) jComboBox_ListaVideos.getSelectedItem();
+        if (selectedVideo != null) {
+            Platform.runLater(() -> playVideoFromGridFS(selectedVideo));
+        }
+    }
+
+    private void playVideoFromGridFS(String filename) {
+        stopVideo(); // Stop any currently playing video
+        File videoFile = downloadVideoFromGridFS(filename);
+        if (videoFile != null) {
+            Media media = new Media(videoFile.toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            MediaView mediaView = (MediaView) ((StackPane) jfxPanel.getScene().getRoot()).getChildren().get(0);
+            mediaView.setMediaPlayer(mediaPlayer);
+            mediaPlayer.play();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to load video: " + filename, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private File downloadVideoFromGridFS(String filename) {
+        try {
+            GridFSFile gridFSFile = gridFSBucket.find(new org.bson.Document("filename", filename)).first();
+            if (gridFSFile != null) {
+                File tempFile = File.createTempFile("video", ".mp4");
+                tempFile.deleteOnExit();
+
+                try (GridFSDownloadStream downloadStream = gridFSBucket.openDownloadStream(gridFSFile.getObjectId());
+                     FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = downloadStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, bytesRead);
+                    }
+                }
+
+                return tempFile;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void stopVideo() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+
+    private void addMediaControls() {
+        // Create control buttons
+        playButton = new JButton("Play");
+        pauseButton = new JButton("Pause");
+        stopButton = new JButton("Stop");
+        rewindButton = new JButton("Rewind");
+        fastForwardButton = new JButton("Fast Forward");
+
+        volumeSlider = new JSlider(0, 100, 50);
+
+        // Add action listeners
+        playButton.addActionListener(e -> Platform.runLater(() -> {
+            if (mediaPlayer != null) mediaPlayer.play();
+        }));
+
+        pauseButton.addActionListener(e -> Platform.runLater(() -> {
+            if (mediaPlayer != null) mediaPlayer.pause();
+        }));
+
+        stopButton.addActionListener(e -> Platform.runLater(() -> {
+            if (mediaPlayer != null) mediaPlayer.stop();
+        }));
+
+        rewindButton.addActionListener(e -> Platform.runLater(() -> {
+            if (mediaPlayer != null) mediaPlayer.seek(mediaPlayer.getCurrentTime().subtract(javafx.util.Duration.seconds(5)));
+        }));
+
+        fastForwardButton.addActionListener(e -> Platform.runLater(() -> {
+            if (mediaPlayer != null) mediaPlayer.seek(mediaPlayer.getCurrentTime().add(javafx.util.Duration.seconds(5)));
+        }));
+
+        volumeSlider.addChangeListener(e -> Platform.runLater(() -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.setVolume(volumeSlider.getValue() / 100.0);
+            }
+        }));
+
+        // Create control panel
+        controlsPanel = new JPanel();
+        controlsPanel.setLayout(new FlowLayout());
+        controlsPanel.add(playButton);
+        controlsPanel.add(pauseButton);
+        controlsPanel.add(stopButton);
+        controlsPanel.add(rewindButton);
+        controlsPanel.add(fastForwardButton);
+        controlsPanel.add(new JLabel("Volume:"));
+        controlsPanel.add(volumeSlider);
+
+        // Add the control panel below the video
+        add(controlsPanel, BorderLayout.SOUTH);
+    }
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -113,6 +204,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel_Diagonal = new javax.swing.JLabel();
         jLabel_Registrarse = new javax.swing.JLabel();
         jLabel_Icono_UAATube = new javax.swing.JLabel();
+        jPanel_ReproducirVideo = new javax.swing.JPanel();
+        jComboBox_ListaVideos = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -156,23 +249,44 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
 
+        jPanel_ReproducirVideo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        javax.swing.GroupLayout jPanel_ReproducirVideoLayout = new javax.swing.GroupLayout(jPanel_ReproducirVideo);
+        jPanel_ReproducirVideo.setLayout(jPanel_ReproducirVideoLayout);
+        jPanel_ReproducirVideoLayout.setHorizontalGroup(
+            jPanel_ReproducirVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel_ReproducirVideoLayout.setVerticalGroup(
+            jPanel_ReproducirVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 580, Short.MAX_VALUE)
+        );
+
+        jComboBox_ListaVideos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addComponent(jLabel_Icono_UAATube)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
-                .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel_Icono_UAATube)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
+                        .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(48, 48, 48)
+                        .addComponent(btnSubirVideo))
+                    .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(48, 48, 48)
-                .addComponent(btnSubirVideo)
-                .addGap(48, 48, 48)
-                .addComponent(jLabel_Inicia_Sesion)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_Diagonal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_Registrarse)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel_Inicia_Sesion)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_Diagonal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_Registrarse))
+                    .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
         jPanel1Layout.setVerticalGroup(
@@ -190,7 +304,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel_Icono_UAATube)))
-                .addContainerGap(640, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
@@ -265,6 +383,24 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -276,11 +412,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JButton btnSubirVideo;
+    private javax.swing.JComboBox<String> jComboBox_ListaVideos;
     private javax.swing.JLabel jLabel_Diagonal;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_Inicia_Sesion;
     private javax.swing.JLabel jLabel_Registrarse;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel_ReproducirVideo;
     private javax.swing.JTextField jTextField_BarraBusqueda;
     // End of variables declaration//GEN-END:variables
 }

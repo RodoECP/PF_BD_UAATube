@@ -5,6 +5,7 @@
     <artifactId>UAATube</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <dependencies>
         <dependency>
             <groupId>org.mongodb</groupId>
@@ -16,11 +17,45 @@
             <artifactId>vertx-mod-mongo-gridfs</artifactId>
             <version>1.1.0</version>
         </dependency>
+
+        <!-- Correct JavaFX version -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17.0.2</version> <!-- Replace this with the desired version -->
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>17.0.2</version> <!-- Replace this with the desired version -->
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>17.0.2</version> <!-- Replace this with the desired version -->
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>17.0.2</version> <!-- Replace this with the desired version -->
+            <type>jar</type>
+        </dependency>
+
+        <!-- Moved mongodb-driver-sync inside dependencies -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>4.10.2</version>
+        </dependency>
     </dependencies>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>com.mycompany.uaatube.UAATube</exec.mainClass>
     </properties>
+    <name>UAATube</name>
 </project>
