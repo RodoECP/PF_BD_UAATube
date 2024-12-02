@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import org.bson.Document;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
 
@@ -34,13 +35,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private JButton playButton, pauseButton, stopButton, rewindButton, fastForwardButton;
     private JSlider volumeSlider;
     private JPanel controlsPanel;
-
-    public VentanaPrincipal() {
+    
+    //Variable para almacenar el usuario
+    private static Document Usuario;
+    
+    public VentanaPrincipal(Document Usuario) {
         connectToMongoDB();
         initComponents();
         initializeVideoPlayback();
         loadVideoList();
         addMediaControls();
+        this.Usuario = Usuario;
+        checarSesion();
+        System.out.println(Usuario);
     }
 
     private void connectToMongoDB() {
@@ -200,9 +207,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jTextField_BarraBusqueda = new javax.swing.JTextField();
         btnSubirVideo = new javax.swing.JButton();
-        jLabel_Inicia_Sesion = new javax.swing.JLabel();
+        jLabel_OpcionCuenta1 = new javax.swing.JLabel();
         jLabel_Diagonal = new javax.swing.JLabel();
-        jLabel_Registrarse = new javax.swing.JLabel();
+        jLabel_OpcionCuenta2 = new javax.swing.JLabel();
         jLabel_Icono_UAATube = new javax.swing.JLabel();
         jPanel_ReproducirVideo = new javax.swing.JPanel();
         jComboBox_ListaVideos = new javax.swing.JComboBox<>();
@@ -221,19 +228,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         btnSubirVideo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         btnSubirVideo.setText("Subir Video");
+        btnSubirVideo.setVisible(false);
         btnSubirVideo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSubirVideoActionPerformed(evt);
             }
         });
 
-        jLabel_Inicia_Sesion.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel_Inicia_Sesion.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel_Inicia_Sesion.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_Inicia_Sesion.setText("Inicia Sesión");
-        jLabel_Inicia_Sesion.addMouseListener(new java.awt.event.MouseAdapter() {
+        jLabel_OpcionCuenta1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel_OpcionCuenta1.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel_OpcionCuenta1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_OpcionCuenta1.setText("Inicia Sesión");
+        jLabel_OpcionCuenta1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_Inicia_SesionMouseClicked(evt);
+                jLabel_OpcionCuenta1MouseClicked(evt);
             }
         });
 
@@ -242,10 +250,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel_Diagonal.setForeground(new java.awt.Color(255, 255, 255));
         jLabel_Diagonal.setText("/");
 
-        jLabel_Registrarse.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel_Registrarse.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel_Registrarse.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_Registrarse.setText("Registrarse");
+        jLabel_OpcionCuenta2.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel_OpcionCuenta2.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel_OpcionCuenta2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_OpcionCuenta2.setText("Registrarse");
+        jLabel_OpcionCuenta2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel_OpcionCuenta2MouseClicked(evt);
+            }
+        });
 
         jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
 
@@ -281,11 +294,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel_Inicia_Sesion)
+                        .addComponent(jLabel_OpcionCuenta1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel_Diagonal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_Registrarse))
+                        .addComponent(jLabel_OpcionCuenta2))
                     .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17))
         );
@@ -297,9 +310,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         .addGap(17, 17, 17)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel_Inicia_Sesion)
+                            .addComponent(jLabel_OpcionCuenta1)
                             .addComponent(jLabel_Diagonal)
-                            .addComponent(jLabel_Registrarse)
+                            .addComponent(jLabel_OpcionCuenta2)
                             .addComponent(btnSubirVideo)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
@@ -346,16 +359,44 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField_BarraBusquedaActionPerformed
 
-    private void jLabel_Inicia_SesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_Inicia_SesionMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel_Inicia_SesionMouseClicked
+    private void jLabel_OpcionCuenta1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_OpcionCuenta1MouseClicked
+        if(Usuario != null){
+            Ventana_AdmCuenta form = new Ventana_AdmCuenta(Usuario, "PaginaPrincipal");
+            form.setVisible(true);
+            dispose();
+        } else {
+            Ventana_IniciarSesion form = new Ventana_IniciarSesion("PaginaPrincipal");
+            form.setVisible(true);
+            dispose();
+        }
+    }//GEN-LAST:event_jLabel_OpcionCuenta1MouseClicked
 
     private void btnSubirVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubirVideoActionPerformed
-        Ventana_SubirVideo form = new Ventana_SubirVideo();
+        Ventana_SubirVideo form = new Ventana_SubirVideo(Usuario, "PaginaPrincipal");
         form.setVisible(true);
         dispose(); // Cierra la ventana actual (opcional)
     }//GEN-LAST:event_btnSubirVideoActionPerformed
 
+    private void jLabel_OpcionCuenta2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_OpcionCuenta2MouseClicked
+        if (Usuario != null){
+            VentanaPrincipal form = new VentanaPrincipal(null);
+            form.setVisible(true);
+            dispose();
+        } else{
+            Ventana_RegistrarUsuario form = new Ventana_RegistrarUsuario("PaginaPrincipal");
+            form.setVisible(true);
+            dispose();
+        }
+    }//GEN-LAST:event_jLabel_OpcionCuenta2MouseClicked
+
+    //Metodo para verificar si hay un usuario que haya iniciado sesion y hacer los cambios necesarios a la pagina
+    private void checarSesion(){
+        if (Usuario != null){
+            btnSubirVideo.setVisible(true);
+            jLabel_OpcionCuenta1.setText("Administrar Cuenta");
+            jLabel_OpcionCuenta2.setText("Cerrar Sesion");
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -404,7 +445,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VentanaPrincipal().setVisible(true);
+                new VentanaPrincipal(Usuario).setVisible(true);
             }
         });
     }
@@ -415,8 +456,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox_ListaVideos;
     private javax.swing.JLabel jLabel_Diagonal;
     private javax.swing.JLabel jLabel_Icono_UAATube;
-    private javax.swing.JLabel jLabel_Inicia_Sesion;
-    private javax.swing.JLabel jLabel_Registrarse;
+    private javax.swing.JLabel jLabel_OpcionCuenta1;
+    private javax.swing.JLabel jLabel_OpcionCuenta2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_ReproducirVideo;
     private javax.swing.JTextField jTextField_BarraBusqueda;

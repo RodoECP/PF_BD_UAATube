@@ -31,10 +31,11 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
      * de registro de usuario, configura los componentes de la interfaz gráfica
      * y ajusta los comportamientos iniciales de los campos de texto.
      */
-    public Ventana_RegistrarUsuario() {
+    public Ventana_RegistrarUsuario(String PaginaOrigen) {
         initComponents();       // Inicializa los componentes de la interfaz gráfica.
         initializeFields();     // Configura los valores iniciales de los campos de texto.
         removeInitialFocus();   // Ajusta el enfoque para evitar que un campo esté enfocado inicialmente.
+        this.PaginaOrigen = PaginaOrigen;
     }
 
 //Variables para almacenar los datos que ingrese el usuario
@@ -45,6 +46,10 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
     private String contraseña = "";
     private String confirmarContraseña = "";
 
+//Variable para almacenar la pagina de donde se abrió esta
+    private static String PaginaOrigen;
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -66,6 +71,9 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jLabel_Contraseña_Usuario = new javax.swing.JLabel();
         jLabel_Contraseña_Usuario1 = new javax.swing.JLabel();
         jLabel_Icono_UAATube = new javax.swing.JLabel();
+        jButton_Cancelar = new javax.swing.JButton();
+        jButton_IniciaSesion = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,37 +149,65 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
 
         jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
 
+        jButton_Cancelar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jButton_Cancelar.setText("Cancelar");
+        jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CancelarActionPerformed(evt);
+            }
+        });
+
+        jButton_IniciaSesion.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jButton_IniciaSesion.setText("Inicia Sesión Aquí");
+        jButton_IniciaSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_IniciaSesionActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("¿Ya tienes cuenta?");
+
         javax.swing.GroupLayout jPanel_RegistrarUsuarioLayout = new javax.swing.GroupLayout(jPanel_RegistrarUsuario);
         jPanel_RegistrarUsuario.setLayout(jPanel_RegistrarUsuarioLayout);
         jPanel_RegistrarUsuarioLayout.setHorizontalGroup(
             jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                        .addComponent(jLabel_Icono_UAATube)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_Registro_UAA))
-                    .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPasswordField_Contraseña_Confirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
                         .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                                .addGap(144, 144, 144)
-                                .addComponent(jLabel_Contraseña_Usuario))
-                            .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                                    .addGap(120, 120, 120)
-                                    .addComponent(jButton_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                                    .addGap(113, 113, 113)
-                                    .addComponent(jLabel_Contraseña_Usuario1)
-                                    .addGap(110, 110, 110)))
-                            .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jTextField_NombreCanal)
-                                .addComponent(jTextField_NombreUsuario)
-                                .addComponent(jTextField_Categorias)
-                                .addComponent(jTextField_CorreoElectronico)
-                                .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(jLabel_Icono_UAATube)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel_Registro_UAA))
+                            .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jPasswordField_Contraseña_Confirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
+                                        .addGap(144, 144, 144)
+                                        .addComponent(jLabel_Contraseña_Usuario))
+                                    .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
+                                        .addGap(113, 113, 113)
+                                        .addComponent(jLabel_Contraseña_Usuario1)
+                                        .addGap(110, 110, 110))
+                                    .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(jTextField_NombreCanal)
+                                        .addComponent(jTextField_NombreUsuario)
+                                        .addComponent(jTextField_Categorias)
+                                        .addComponent(jTextField_CorreoElectronico)
+                                        .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(jButton_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_IniciaSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel_RegistrarUsuarioLayout.setVerticalGroup(
@@ -199,9 +235,15 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                 .addComponent(jLabel_Contraseña_Usuario1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField_Contraseña_Confirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
-                .addComponent(jButton_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jButton_IniciaSesion))
+                .addGap(42, 42, 42))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -212,7 +254,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 485, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 501, Short.MAX_VALUE)
         );
 
         pack();
@@ -493,6 +535,22 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         confirmarContraseña = new String(jPasswordField_Contraseña_Confirmar.getPassword());
     }//GEN-LAST:event_jPasswordField_Contraseña_ConfirmarActionPerformed
 
+    private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
+        if (PaginaOrigen == "PaginaPrincipal"){
+            VentanaPrincipal form = new VentanaPrincipal(null);
+            form.setVisible(true);
+            this.dispose();
+        } else {
+            System.out.println(PaginaOrigen);
+        }
+    }//GEN-LAST:event_jButton_CancelarActionPerformed
+
+    private void jButton_IniciaSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciaSesionActionPerformed
+        Ventana_IniciarSesion form = new Ventana_IniciarSesion(PaginaOrigen);
+        form.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton_IniciaSesionActionPerformed
+
     public MongoDatabase crearConexion(String databaseName) {
         MongoDatabase database = null;
         try {
@@ -583,13 +641,16 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana_RegistrarUsuario().setVisible(true);
+                new Ventana_RegistrarUsuario(PaginaOrigen).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_Cancelar;
+    private javax.swing.JButton jButton_IniciaSesion;
     private javax.swing.JButton jButton_RegistrarUsuario;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Contraseña_Usuario;
     private javax.swing.JLabel jLabel_Contraseña_Usuario1;
     private javax.swing.JLabel jLabel_Icono_UAATube;

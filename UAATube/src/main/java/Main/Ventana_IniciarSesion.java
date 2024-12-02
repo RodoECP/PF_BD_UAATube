@@ -26,12 +26,19 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
      * componentes gráficos de la ventana de inicio de sesión y configura los
      * listeners necesarios para los campos de texto.
      */
-    public Ventana_IniciarSesion() {
+    public Ventana_IniciarSesion(String PaginaOrigen) {
         // Inicializa los componentes de la ventana.
         initComponents();
         // Configura los listeners para los campos de texto y contraseña con placeholders dinámicos.
         setupFieldFocusListeners();
+        this.PaginaOrigen = PaginaOrigen;
+        Usuario = null;
     }
+    //Variable para almacenar la pagina de donde se inició esta
+    private static String PaginaOrigen;
+    
+    //Variable para almacenar el documento del usuario que haya iniciado sesion
+    private static Document Usuario;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +56,9 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
         jLabel_Contraseña_Usuario = new javax.swing.JLabel();
         jPasswordField_Contraseña = new javax.swing.JPasswordField();
         jLabel_Icono_UAATube = new javax.swing.JLabel();
+        jButton_Cancelar = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jButton_Registrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -87,6 +97,24 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
 
         jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
 
+        jButton_Cancelar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jButton_Cancelar.setText("Cancelar");
+        jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CancelarActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("¿No tienes cuenta?");
+
+        jButton_Registrar.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jButton_Registrar.setText("Registrate Aquí");
+        jButton_Registrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_RegistrarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -98,17 +126,28 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
                 .addComponent(jLabel_Inicio_Sesion_UAATube)
                 .addGap(224, 224, 224))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField_Usuario_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(92, 92, 92)
-                        .addComponent(jButton_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(22, 22, 22)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextField_Usuario_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(120, 120, 120)
+                                .addComponent(jLabel_Contraseña_Usuario))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(120, 120, 120)
-                        .addComponent(jLabel_Contraseña_Usuario)))
+                        .addGap(40, 40, 40)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton_Registrar, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -128,7 +167,13 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jButton_Registrar))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -191,9 +236,12 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
                         Filters.eq("nombre_usuario", usuario),
                         Filters.eq("contraseña", contraseña)
                 )).first();
-
+                System.out.println(usuarioDoc);
                 if (usuarioDoc != null) {
                     JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                    Usuario = usuarioDoc;
+                    cerrarVentana();
+                    
                 } else {
                     JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -214,6 +262,16 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
         // TODO add your handling code here:
 
     }//GEN-LAST:event_jPasswordField_ContraseñaActionPerformed
+
+    private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
+        cerrarVentana();
+    }//GEN-LAST:event_jButton_CancelarActionPerformed
+
+    private void jButton_RegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarActionPerformed
+        Ventana_RegistrarUsuario form = new Ventana_RegistrarUsuario(PaginaOrigen);
+        form.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jButton_RegistrarActionPerformed
 
     /**
      * Configura los listeners de enfoque (focus) para los campos de texto y
@@ -310,6 +368,16 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
     private void highlightField(JPasswordField field) {
         field.setBorder(BorderFactory.createLineBorder(Color.RED));
     }
+    
+    private void cerrarVentana(){
+        if (PaginaOrigen == "PaginaPrincipal"){
+            VentanaPrincipal form = new VentanaPrincipal(Usuario);
+            form.setVisible(true);
+            dispose();
+        } else {
+            System.out.println(PaginaOrigen);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -341,13 +409,16 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana_IniciarSesion().setVisible(true);
+                new Ventana_IniciarSesion(PaginaOrigen).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_Cancelar;
     private javax.swing.JButton jButton_InicioSesion;
+    private javax.swing.JButton jButton_Registrar;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Contraseña_Usuario;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_Inicio_Sesion_UAATube;

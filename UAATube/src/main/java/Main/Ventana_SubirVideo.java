@@ -38,15 +38,23 @@ import org.bson.types.ObjectId;
  */
 public class Ventana_SubirVideo extends javax.swing.JFrame {
 
-    boolean videoCargado = false;
-    boolean miniCargado = false;
+    //Variables para almacenar los archivos que se carguen
+    String videoCargado = null;
+    String miniCargado = null;
+    
+    //Variable para almacenar la informacion del usuario que haya inicado sesion
+    private static Document Usuario;
+    
+    //Variable para almacenar la pagina de donde se abrio esta
+    private static String PaginaOrigen;
     /**
      * Creates new form Ventana_SubirVideo
      */
-    public Ventana_SubirVideo() {
+    public Ventana_SubirVideo(Document Usuario, String PaginaOrigen) {
         initComponents();
         initComponents2();
-        
+        this.Usuario = Usuario;
+        this.PaginaOrigen = PaginaOrigen;
     }
 
     /**
@@ -426,7 +434,8 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                     if(!extension){
                         JOptionPane.showMessageDialog(rootPane, "El archivo cargado no es un tipo valido", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        txtCargarVideo.setText(file.getAbsolutePath());
+                        txtCargarVideo.setText("Video Cargado: \n" + file.getAbsolutePath());
+                        videoCargado = file.getAbsolutePath();
                     }
                 }
                 evt.dropComplete(true);
@@ -447,7 +456,8 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                     if(!extension){
                         JOptionPane.showMessageDialog(rootPane, "El archivo cargado no es un tipo valido", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        txtCargarMini.setText(file.getAbsolutePath());
+                        txtCargarMini.setText("Miniatura cargada:\n" + file.getAbsolutePath());
+                        miniCargado = file.getAbsolutePath();
                     }
                 }
                 evt.dropComplete(true);
@@ -471,7 +481,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         if(verificarCampos()){
             subirVideo();
             JOptionPane.showConfirmDialog(this,"El video se ha subido", "Confirmacion",JOptionPane.PLAIN_MESSAGE);
-            VentanaPrincipal form = new VentanaPrincipal();
+            VentanaPrincipal form = new VentanaPrincipal(Usuario);
             form.setVisible(true);
             this.dispose();
         } else {
@@ -484,9 +494,13 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCargarVideoPropertyChange
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        VentanaPrincipal form = new VentanaPrincipal();
-        form.setVisible(true);
-        this.dispose();
+        if (PaginaOrigen == "PaginaPrincipal"){
+            VentanaPrincipal form = new VentanaPrincipal(Usuario);
+            form.setVisible(true);
+            this.dispose();
+        } else {
+            System.out.println(PaginaOrigen);
+        }
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void txtTituloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTituloActionPerformed
@@ -514,16 +528,16 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                     if(!extension){
                         JOptionPane.showMessageDialog(rootPane, "El archivo cargado no es un tipo valido", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        txtCargarMini.setText(file.getAbsolutePath());
-                        miniCargado = true;
+                        txtCargarMini.setText("Miniatura cargada:\n" + file.getAbsolutePath());
+                        miniCargado = file.getAbsolutePath();
                     }
                 } else {
                     boolean extension = fileName.endsWith(".MP4");
                     if(!extension){
                         JOptionPane.showMessageDialog(rootPane, "El archivo cargado no es un tipo valido", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        txtCargarVideo.setText(file.getAbsolutePath());
-                        videoCargado = true;
+                        txtCargarVideo.setText("Video Cargado: \n" + file.getAbsolutePath());
+                        videoCargado = file.getAbsolutePath();
                     }
                 }
                 
@@ -544,15 +558,13 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
             conexion conexionInstance = new conexion();
             MongoDatabase database = conexionInstance.crearConexion("UAATube");
             GridFSBucket gridFSBucket = GridFSBuckets.create(database);
-            String filePathVideo = txtCargarVideo.getText();
-            String filePathMini = txtCargarMini.getText();
-            try (InputStream videoStream = new FileInputStream(filePathVideo);
-                    InputStream miniStream = new FileInputStream(filePathMini)) {
-                String videoFileName = txtTitulo.getText().replaceAll(" ", "_");
+            try (InputStream videoStream = new FileInputStream(videoCargado);
+                    InputStream miniStream = new FileInputStream(miniCargado)) {
+                String videoFileName = "Video: " + txtTitulo.getText();
                 ObjectId videoId = gridFSBucket.uploadFromStream(videoFileName, videoStream);
                 System.out.println("Video subido con éxito: " + videoFileName);
-
-                String thumbnailFileName = txtTitulo.getText().replaceAll(" ", "_");
+                
+                String thumbnailFileName = "Miniatura: " + txtTitulo.getText();
                 ObjectId miniId = gridFSBucket.uploadFromStream(thumbnailFileName, miniStream);
                 System.out.println("Miniatura subida con éxito: " + thumbnailFileName);
                 
@@ -560,7 +572,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                 Document videoMetadata = new Document()
                         .append("videoId", videoId)
                         .append("thumbnailId", miniId)
-                        .append("autor", "usuarioId")
+                        .append("autor", Usuario.getString("nombre_canal"))
                         .append("title", txtTitulo.getText())
                         .append("description", txtDescripcion.getText())
                         .append("categorias", categorias)
@@ -591,8 +603,8 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
     }
 
     private boolean verificarCampos(){
-        if (!videoCargado|| 
-                !miniCargado ||
+        if (videoCargado == null|| 
+                miniCargado == null ||
                 txtTitulo.getText().isBlank() ||
                 txtDescripcion.getText().isBlank()||
                 juntarCategorias().isEmpty()){
@@ -631,7 +643,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana_SubirVideo().setVisible(true);
+                new Ventana_SubirVideo(Usuario, PaginaOrigen).setVisible(true);
             }
         });
     }
