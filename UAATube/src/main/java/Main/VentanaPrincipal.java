@@ -21,26 +21,24 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
 
-    private JFXPanel jfxPanel;
+   private JFXPanel jfxPanel;
     private MediaPlayer mediaPlayer;
     private GridFSBucket gridFSBucket;
-
-    // UI Controls
-    private JButton playButton, pauseButton, stopButton, rewindButton, fastForwardButton;
     private JSlider volumeSlider;
     private JPanel controlsPanel;
-    
-    //Variable para almacenar el usuario
+    private JButton playButton, pauseButton, stopButton, rewindButton, fastForwardButton;
     private static Document Usuario;
-    
+
     public VentanaPrincipal(Document Usuario) {
-        connectToMongoDB();
+          connectToMongoDB();
         initComponents();
         initializeVideoPlayback();
         loadVideoList();
@@ -56,14 +54,27 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         gridFSBucket = GridFSBuckets.create(database);
     }
 
-    private void initializeVideoPlayback() {
+private void initializeVideoPlayback() {
         jfxPanel = new JFXPanel();
         jPanel_ReproducirVideo.setLayout(new BorderLayout());
         jPanel_ReproducirVideo.add(jfxPanel, BorderLayout.CENTER);
 
+        // Add a ComponentListener to listen for resize events on the panel
+        jPanel_ReproducirVideo.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                // Update the video size when the panel is resized
+                Platform.runLater(() -> updateVideoSize());
+            }
+        });
+
         Platform.runLater(() -> {
+            // Set the initial size to match the current resolution of the panel
+            double initialWidth = jPanel_ReproducirVideo.getWidth();
+            double initialHeight = jPanel_ReproducirVideo.getHeight();
+            
             StackPane root = new StackPane();
-            Scene scene = new Scene(root, jPanel_ReproducirVideo.getWidth(), jPanel_ReproducirVideo.getHeight());
+            Scene scene = new Scene(root, initialWidth, initialHeight);
             jfxPanel.setScene(scene);
 
             MediaView mediaView = new MediaView();
@@ -73,29 +84,37 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
     }
 
-    private void loadVideoList() {
-        List<String> videoNames = new ArrayList<>();
-        try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
-            while (cursor.hasNext()) {
-                GridFSFile file = cursor.next();
-                videoNames.add(file.getFilename());
+private void loadVideoList() {
+    List<String> videoNames = new ArrayList<>();
+    try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
+        while (cursor.hasNext()) {
+            GridFSFile file = cursor.next();
+            String filename = file.getFilename();
+            // Filter files based on video extensions
+            if (filename.toLowerCase().endsWith(".mp4") ||
+                filename.toLowerCase().endsWith(".avi") ||
+                filename.toLowerCase().endsWith(".mkv") ||
+                filename.toLowerCase().endsWith(".mov") ||
+                filename.toLowerCase().endsWith(".wmv")) {
+                videoNames.add(filename);
             }
         }
-
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
-        jComboBox_ListaVideos.setModel(model);
-
-        jComboBox_ListaVideos.addActionListener(this::onVideoSelected);
     }
 
-    private void onVideoSelected(ActionEvent e) {
+    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
+    jComboBox_ListaVideos.setModel(model);
+
+    jComboBox_ListaVideos.addActionListener(this::onVideoSelected);
+}
+
+private void onVideoSelected(ActionEvent e) {
         String selectedVideo = (String) jComboBox_ListaVideos.getSelectedItem();
         if (selectedVideo != null) {
             Platform.runLater(() -> playVideoFromGridFS(selectedVideo));
         }
     }
 
-    private void playVideoFromGridFS(String filename) {
+private void playVideoFromGridFS(String filename) {
         stopVideo(); // Stop any currently playing video
         File videoFile = downloadVideoFromGridFS(filename);
         if (videoFile != null) {
@@ -103,9 +122,34 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             mediaPlayer = new MediaPlayer(media);
             MediaView mediaView = (MediaView) ((StackPane) jfxPanel.getScene().getRoot()).getChildren().get(0);
             mediaView.setMediaPlayer(mediaPlayer);
+            
+            // Set initial size based on the current panel dimensions
+            updateVideoSize();
+
             mediaPlayer.play();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to load video: " + filename, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void updateVideoSize() {
+        if (mediaPlayer != null && mediaPlayer.getMedia() != null) {
+            // Get the current dimensions of the panel
+            double width = jPanel_ReproducirVideo.getWidth();
+            double height = jPanel_ReproducirVideo.getHeight();
+
+            // Get the MediaView from the scene
+            MediaView mediaView = (MediaView) ((StackPane) jfxPanel.getScene().getRoot()).getChildren().get(0);
+
+            // Set the new size for the MediaView based on panel size
+            mediaView.setFitWidth(width);
+            mediaView.setFitHeight(height);
+
+            // Preserve the aspect ratio
+            mediaView.setPreserveRatio(true);  // Maintain the aspect ratio of the video
+
+            // Optionally, set smooth scaling for better visual quality
+            mediaView.setSmooth(true);
         }
     }
 
@@ -116,9 +160,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 File tempFile = File.createTempFile("video", ".mp4");
                 tempFile.deleteOnExit();
 
-                try (GridFSDownloadStream downloadStream = gridFSBucket.openDownloadStream(gridFSFile.getObjectId());
-                     FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
-
+                try (GridFSDownloadStream downloadStream = gridFSBucket.openDownloadStream(gridFSFile.getObjectId()); FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
                     byte[] buffer = new byte[1024];
                     int bytesRead;
                     while ((bytesRead = downloadStream.read(buffer)) != -1) {
@@ -134,13 +176,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         return null;
     }
 
-    private void stopVideo() {
+     private void stopVideo() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
     }
-
-    private void addMediaControls() {
+     
+     private void addMediaControls() {
         // Create control buttons
         playButton = new JButton("Play");
         pauseButton = new JButton("Pause");
@@ -148,34 +190,51 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         rewindButton = new JButton("Rewind");
         fastForwardButton = new JButton("Fast Forward");
 
-        volumeSlider = new JSlider(0, 100, 50);
+        volumeSlider = new JSlider(0, 100, 50); // Default value set to 50%
+        jLabel_Volumen = new JLabel("Volume: 50%");  // Default volume label
 
-        // Add action listeners
+        // Add action listeners for media controls (play, pause, stop, rewind, fast forward)
         playButton.addActionListener(e -> Platform.runLater(() -> {
-            if (mediaPlayer != null) mediaPlayer.play();
+            if (mediaPlayer != null) {
+                mediaPlayer.play();
+            }
         }));
 
         pauseButton.addActionListener(e -> Platform.runLater(() -> {
-            if (mediaPlayer != null) mediaPlayer.pause();
+            if (mediaPlayer != null) {
+                mediaPlayer.pause();
+            }
         }));
 
         stopButton.addActionListener(e -> Platform.runLater(() -> {
-            if (mediaPlayer != null) mediaPlayer.stop();
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
         }));
 
         rewindButton.addActionListener(e -> Platform.runLater(() -> {
-            if (mediaPlayer != null) mediaPlayer.seek(mediaPlayer.getCurrentTime().subtract(javafx.util.Duration.seconds(5)));
+            if (mediaPlayer != null) {
+                mediaPlayer.seek(mediaPlayer.getCurrentTime().subtract(javafx.util.Duration.seconds(5)));
+            }
         }));
 
         fastForwardButton.addActionListener(e -> Platform.runLater(() -> {
-            if (mediaPlayer != null) mediaPlayer.seek(mediaPlayer.getCurrentTime().add(javafx.util.Duration.seconds(5)));
-        }));
-
-        volumeSlider.addChangeListener(e -> Platform.runLater(() -> {
             if (mediaPlayer != null) {
-                mediaPlayer.setVolume(volumeSlider.getValue() / 100.0);
+                mediaPlayer.seek(mediaPlayer.getCurrentTime().add(javafx.util.Duration.seconds(5)));
             }
         }));
+
+        volumeSlider.addChangeListener(e -> {
+            int volumeValue = volumeSlider.getValue();
+            Platform.runLater(() -> {
+                if (mediaPlayer != null) {
+                    mediaPlayer.setVolume(volumeValue / 100.0);  // Set the volume of the player
+                }
+            });
+
+            // Update the jLabel_Volumen to show the current volume percentage
+            SwingUtilities.invokeLater(() -> jLabel_Volumen.setText("Volume: " + volumeValue + "%"));
+        });
 
         // Create control panel
         controlsPanel = new JPanel();
@@ -188,12 +247,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         controlsPanel.add(new JLabel("Volume:"));
         controlsPanel.add(volumeSlider);
 
+
         // Add the control panel below the video
         add(controlsPanel, BorderLayout.SOUTH);
     }
-    
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -213,6 +271,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel_Icono_UAATube = new javax.swing.JLabel();
         jPanel_ReproducirVideo = new javax.swing.JPanel();
         jComboBox_ListaVideos = new javax.swing.JComboBox<>();
+        jButton_PlayVideo = new javax.swing.JButton();
+        jButton_StopVideo = new javax.swing.JButton();
+        jButton_PauseVideo = new javax.swing.JButton();
+        jButton_RewindVideo = new javax.swing.JButton();
+        jButton_FastForwardVideo = new javax.swing.JButton();
+        jButton_VolumeUp = new javax.swing.JButton();
+        jButton_VolumeDownIcon = new javax.swing.JButton();
+        jLabel_Volumen = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -277,20 +343,96 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jComboBox_ListaVideos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        jButton_PlayVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PlayIcon.png"))); // NOI18N
+        jButton_PlayVideo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_PlayVideoActionPerformed(evt);
+            }
+        });
+
+        jButton_StopVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/StopIcon.png"))); // NOI18N
+        jButton_StopVideo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_StopVideoActionPerformed(evt);
+            }
+        });
+
+        jButton_PauseVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PauseIcon.png"))); // NOI18N
+        jButton_PauseVideo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_PauseVideoActionPerformed(evt);
+            }
+        });
+
+        jButton_RewindVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/RewindIcon.png"))); // NOI18N
+        jButton_RewindVideo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_RewindVideoActionPerformed(evt);
+            }
+        });
+
+        jButton_FastForwardVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/FastForwardIcon.png"))); // NOI18N
+        jButton_FastForwardVideo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_FastForwardVideoActionPerformed(evt);
+            }
+        });
+
+        jButton_VolumeUp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/VolumeUp.png"))); // NOI18N
+        jButton_VolumeUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_VolumeUpActionPerformed(evt);
+            }
+        });
+
+        jButton_VolumeDownIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/VolumeDown.png"))); // NOI18N
+        jButton_VolumeDownIcon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_VolumeDownIconActionPerformed(evt);
+            }
+        });
+
+        jLabel_Volumen.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jLabel_Volumen.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Volumen.setText("jLabel1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel_Icono_UAATube)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
-                        .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(48, 48, 48)
-                        .addComponent(btnSubirVideo))
-                    .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel_Icono_UAATube)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 287, Short.MAX_VALUE)
+                                .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(48, 48, 48)
+                                .addComponent(btnSubirVideo))
+                            .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(217, 217, 217)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel_Volumen)
+                                .addGap(51, 51, 51)))
+                        .addGap(43, 43, 43)))
                 .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -321,24 +463,32 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel_Volumen)
+                        .addGap(1, 1, 1)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
         PanelPrincipal.setLayout(PanelPrincipalLayout);
         PanelPrincipalLayout.setHorizontalGroup(
             PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelPrincipalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         PanelPrincipalLayout.setVerticalGroup(
             PanelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PanelPrincipalLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -360,7 +510,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField_BarraBusquedaActionPerformed
 
     private void jLabel_OpcionCuenta1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_OpcionCuenta1MouseClicked
-        if(Usuario != null){
+        if (Usuario != null) {
             Ventana_AdmCuenta form = new Ventana_AdmCuenta(Usuario, "PaginaPrincipal");
             form.setVisible(true);
             dispose();
@@ -378,25 +528,81 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSubirVideoActionPerformed
 
     private void jLabel_OpcionCuenta2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_OpcionCuenta2MouseClicked
-        if (Usuario != null){
+        if (Usuario != null) {
             VentanaPrincipal form = new VentanaPrincipal(null);
             form.setVisible(true);
             dispose();
-        } else{
+        } else {
             Ventana_RegistrarUsuario form = new Ventana_RegistrarUsuario("PaginaPrincipal");
             form.setVisible(true);
             dispose();
         }
     }//GEN-LAST:event_jLabel_OpcionCuenta2MouseClicked
 
+    private void jButton_VolumeUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_VolumeUpActionPerformed
+        // TODO add your handling code here:
+        if (mediaPlayer != null) {
+            double currentVolume = mediaPlayer.getVolume();
+            if (currentVolume < 1.0) {
+                mediaPlayer.setVolume(currentVolume + 0.1);
+            }
+        }
+    }//GEN-LAST:event_jButton_VolumeUpActionPerformed
+
+    private void jButton_RewindVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RewindVideoActionPerformed
+        // TODO add your handling code here:
+        if (mediaPlayer != null) {
+            mediaPlayer.seek(mediaPlayer.getCurrentTime().subtract(javafx.util.Duration.seconds(10)));
+        }
+    }//GEN-LAST:event_jButton_RewindVideoActionPerformed
+
+    private void jButton_PlayVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PlayVideoActionPerformed
+        // TODO add your handling code here:
+        if (mediaPlayer != null) {
+            mediaPlayer.play();
+        }
+    }//GEN-LAST:event_jButton_PlayVideoActionPerformed
+
+    private void jButton_PauseVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PauseVideoActionPerformed
+        // TODO add your handling code here:
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+    }//GEN-LAST:event_jButton_PauseVideoActionPerformed
+
+    private void jButton_StopVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_StopVideoActionPerformed
+        // TODO add your handling code here:
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }//GEN-LAST:event_jButton_StopVideoActionPerformed
+
+    private void jButton_FastForwardVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_FastForwardVideoActionPerformed
+        // TODO add your handling code here:
+        if (mediaPlayer != null) {
+            mediaPlayer.seek(mediaPlayer.getCurrentTime().add(javafx.util.Duration.seconds(10)));
+        }
+    }//GEN-LAST:event_jButton_FastForwardVideoActionPerformed
+
+    private void jButton_VolumeDownIconActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_VolumeDownIconActionPerformed
+        // TODO add your handling code here:
+        if (mediaPlayer != null) {
+            double currentVolume = mediaPlayer.getVolume();
+            if (currentVolume > 0.0) {
+                mediaPlayer.setVolume(currentVolume - 0.1);
+            }
+        }
+    }//GEN-LAST:event_jButton_VolumeDownIconActionPerformed
+
     //Metodo para verificar si hay un usuario que haya iniciado sesion y hacer los cambios necesarios a la pagina
-    private void checarSesion(){
-        if (Usuario != null){
+    private void checarSesion() {
+        if (Usuario != null) {
             btnSubirVideo.setVisible(true);
             jLabel_OpcionCuenta1.setText("Administrar Cuenta");
             jLabel_OpcionCuenta2.setText("Cerrar Sesion");
         }
     }
+
     /**
      * @param args the command line arguments
      */
@@ -448,16 +654,26 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 new VentanaPrincipal(Usuario).setVisible(true);
             }
         });
+        
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JButton btnSubirVideo;
+    private javax.swing.JButton jButton_FastForwardVideo;
+    private javax.swing.JButton jButton_PauseVideo;
+    private javax.swing.JButton jButton_PlayVideo;
+    private javax.swing.JButton jButton_RewindVideo;
+    private javax.swing.JButton jButton_StopVideo;
+    private javax.swing.JButton jButton_VolumeDownIcon;
+    private javax.swing.JButton jButton_VolumeUp;
     private javax.swing.JComboBox<String> jComboBox_ListaVideos;
     private javax.swing.JLabel jLabel_Diagonal;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_OpcionCuenta1;
     private javax.swing.JLabel jLabel_OpcionCuenta2;
+    private javax.swing.JLabel jLabel_Volumen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_ReproducirVideo;
     private javax.swing.JTextField jTextField_BarraBusqueda;
