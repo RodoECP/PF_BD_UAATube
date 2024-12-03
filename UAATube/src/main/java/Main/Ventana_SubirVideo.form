@@ -280,7 +280,14 @@
                               <Component id="chkPeliculas" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="chkVideojuegos" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="18" max="32767" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="chkCocina" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkBelleza" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkVlog" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="chkTecnologia" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace pref="53" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -288,13 +295,26 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace pref="14" max="32767" attributes="0"/>
-                          <Component id="chkVideojuegos" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="chkMusica" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="chkFamilia" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="chkPeliculas" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="chkTecnologia" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="chkCocina" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="chkBelleza" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="chkVlog" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <Component id="chkVideojuegos" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="chkMusica" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="chkFamilia" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="chkPeliculas" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                           <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -306,7 +326,7 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Century Gothic" size="12" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Familia"/>
+                    <Property name="text" type="java.lang.String" value="Comedia"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JCheckBox" name="chkMusica">
@@ -331,6 +351,38 @@
                       <Font name="Century Gothic" size="12" style="0"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Videojuegos"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkVlog">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Century Gothic" size="12" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Vlog"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkTecnologia">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Century Gothic" size="12" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Tecnolog&#xed;a"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkCocina">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Century Gothic" size="12" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Cocina"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="chkBelleza">
+                  <Properties>
+                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                      <Font name="Century Gothic" size="12" style="0"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Belleza"/>
                   </Properties>
                 </Component>
               </SubComponents>

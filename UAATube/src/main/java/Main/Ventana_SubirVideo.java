@@ -80,6 +80,10 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         chkMusica = new javax.swing.JCheckBox();
         chkPeliculas = new javax.swing.JCheckBox();
         chkVideojuegos = new javax.swing.JCheckBox();
+        chkVlog = new javax.swing.JCheckBox();
+        chkTecnologia = new javax.swing.JCheckBox();
+        chkCocina = new javax.swing.JCheckBox();
+        chkBelleza = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         btnPublicar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
@@ -141,7 +145,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         jPanel5.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
 
         chkFamilia.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        chkFamilia.setText("Familia");
+        chkFamilia.setText("Comedia");
 
         chkMusica.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         chkMusica.setText("Musica");
@@ -151,6 +155,18 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
 
         chkVideojuegos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         chkVideojuegos.setText("Videojuegos");
+
+        chkVlog.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkVlog.setText("Vlog");
+
+        chkTecnologia.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkTecnologia.setText("Tecnología");
+
+        chkCocina.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkCocina.setText("Cocina");
+
+        chkBelleza.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkBelleza.setText("Belleza");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -163,19 +179,35 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                     .addComponent(chkFamilia)
                     .addComponent(chkPeliculas)
                     .addComponent(chkVideojuegos))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chkCocina)
+                    .addComponent(chkBelleza)
+                    .addComponent(chkVlog)
+                    .addComponent(chkTecnologia))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(14, Short.MAX_VALUE)
-                .addComponent(chkVideojuegos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkMusica)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkFamilia)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chkPeliculas)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(chkTecnologia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkCocina)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkBelleza)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkVlog))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(chkVideojuegos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkMusica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkFamilia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkPeliculas)))
                 .addGap(20, 20, 20))
         );
 
@@ -403,7 +435,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(44, 44, 44)
                         .addComponent(jLabel_Icono_UAATube)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -528,7 +560,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                     if(!extension){
                         JOptionPane.showMessageDialog(rootPane, "El archivo cargado no es un tipo valido", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        txtCargarMini.setText("Miniatura cargada:\n" + file.getAbsolutePath());
+                        txtCargarMini.setText("Miniatura cargada:\n" + file.getName());
                         miniCargado = file.getAbsolutePath();
                     }
                 } else {
@@ -536,7 +568,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                     if(!extension){
                         JOptionPane.showMessageDialog(rootPane, "El archivo cargado no es un tipo valido", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        txtCargarVideo.setText("Video Cargado: \n" + file.getAbsolutePath());
+                        txtCargarVideo.setText("Video Cargado: \n" + file.getName());
                         videoCargado = file.getAbsolutePath();
                     }
                 }
@@ -560,11 +592,13 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
             GridFSBucket gridFSBucket = GridFSBuckets.create(database);
             try (InputStream videoStream = new FileInputStream(videoCargado);
                     InputStream miniStream = new FileInputStream(miniCargado)) {
-                String videoFileName = "Video: " + txtTitulo.getText();
+                File video = new File(videoCargado);
+                String videoFileName = video.getName();
                 ObjectId videoId = gridFSBucket.uploadFromStream(videoFileName, videoStream);
                 System.out.println("Video subido con éxito: " + videoFileName);
                 
-                String thumbnailFileName = "Miniatura: " + txtTitulo.getText();
+                File mini = new File(miniCargado);
+                String thumbnailFileName = mini.getName();
                 ObjectId miniId = gridFSBucket.uploadFromStream(thumbnailFileName, miniStream);
                 System.out.println("Miniatura subida con éxito: " + thumbnailFileName);
                 
@@ -598,6 +632,18 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         }
         if (chkMusica.isSelected()){
             categorias.add("Musica");
+        }
+        if (chkTecnologia.isSelected()) {
+            categorias.add("Tecnologia");
+        }
+        if (chkBelleza.isSelected()) {
+            categorias.add("Belleza");
+        }
+        if(chkCocina.isSelected()){
+            categorias.add("Cocina");
+        }
+        if(chkVlog.isSelected()){
+            categorias.add("Vlog");
         }
         return categorias;
     }
@@ -651,10 +697,14 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnPublicar;
+    private javax.swing.JCheckBox chkBelleza;
+    private javax.swing.JCheckBox chkCocina;
     private javax.swing.JCheckBox chkFamilia;
     private javax.swing.JCheckBox chkMusica;
     private javax.swing.JCheckBox chkPeliculas;
+    private javax.swing.JCheckBox chkTecnologia;
     private javax.swing.JCheckBox chkVideojuegos;
+    private javax.swing.JCheckBox chkVlog;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

@@ -13,7 +13,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -42,7 +44,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
     private String nombreUsuario = "";
     private String nombreCanal = "";
     private String correoElectronico = "";
-    private String categorias = "";
     private String contraseña = "";
     private String confirmarContraseña = "";
 
@@ -63,7 +64,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jTextField_NombreUsuario = new javax.swing.JTextField();
         jTextField_NombreCanal = new javax.swing.JTextField();
         jTextField_CorreoElectronico = new javax.swing.JTextField();
-        jTextField_Categorias = new javax.swing.JTextField();
         jButton_RegistrarUsuario = new javax.swing.JButton();
         jLabel_Registro_UAA = new javax.swing.JLabel();
         jPasswordField_Contraseña = new javax.swing.JPasswordField();
@@ -74,6 +74,16 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jButton_Cancelar = new javax.swing.JButton();
         jButton_IniciaSesion = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jPanelCategorias = new javax.swing.JPanel();
+        chkFamilia = new javax.swing.JCheckBox();
+        chkMusica = new javax.swing.JCheckBox();
+        chkPeliculas = new javax.swing.JCheckBox();
+        chkVideojuegos = new javax.swing.JCheckBox();
+        chkVlog = new javax.swing.JCheckBox();
+        chkTecnologia = new javax.swing.JCheckBox();
+        chkCocina = new javax.swing.JCheckBox();
+        chkBelleza = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -103,15 +113,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jTextField_CorreoElectronico.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField_CorreoElectronicoActionPerformed(evt);
-            }
-        });
-
-        jTextField_Categorias.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        jTextField_Categorias.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField_Categorias.setText("Categorias");
-        jTextField_Categorias.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_CategoriasActionPerformed(evt);
             }
         });
 
@@ -167,19 +168,104 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
 
         jLabel1.setText("¿Ya tienes cuenta?");
 
+        jPanelCategorias.setBackground(new java.awt.Color(29, 113, 150));
+        jPanelCategorias.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanelCategorias.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelCategorias.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+
+        chkFamilia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkFamilia.setText("Comedia");
+
+        chkMusica.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkMusica.setText("Musica");
+
+        chkPeliculas.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkPeliculas.setText("Peliculas");
+
+        chkVideojuegos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVideojuegos.setText("Videojuegos");
+
+        chkVlog.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVlog.setText("Vlog");
+
+        chkTecnologia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkTecnologia.setText("Tecnología");
+
+        chkCocina.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkCocina.setText("Cocina");
+
+        chkBelleza.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkBelleza.setText("Belleza");
+
+        jLabel2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel2.setText("Categorias");
+
+        javax.swing.GroupLayout jPanelCategoriasLayout = new javax.swing.GroupLayout(jPanelCategorias);
+        jPanelCategorias.setLayout(jPanelCategoriasLayout);
+        jPanelCategoriasLayout.setHorizontalGroup(
+            jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCategoriasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanelCategoriasLayout.createSequentialGroup()
+                        .addGroup(jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkMusica)
+                            .addComponent(chkFamilia)
+                            .addComponent(chkPeliculas)
+                            .addComponent(chkVideojuegos))
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkCocina)
+                            .addComponent(chkBelleza)
+                            .addComponent(chkVlog)
+                            .addComponent(chkTecnologia))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelCategoriasLayout.setVerticalGroup(
+            jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCategoriasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCategoriasLayout.createSequentialGroup()
+                        .addComponent(chkTecnologia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkCocina)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkBelleza)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkVlog))
+                    .addGroup(jPanelCategoriasLayout.createSequentialGroup()
+                        .addComponent(chkVideojuegos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkMusica)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkFamilia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkPeliculas)))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel_RegistrarUsuarioLayout = new javax.swing.GroupLayout(jPanel_RegistrarUsuario);
         jPanel_RegistrarUsuario.setLayout(jPanel_RegistrarUsuarioLayout);
         jPanel_RegistrarUsuarioLayout.setHorizontalGroup(
             jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
                                 .addComponent(jLabel_Icono_UAATube)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel_Registro_UAA))
+                            .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jTextField_NombreCanal, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                                .addComponent(jTextField_NombreUsuario)
+                                .addComponent(jTextField_CorreoElectronico))
+                            .addComponent(jPanelCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jPasswordField_Contraseña_Confirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -188,27 +274,23 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                                         .addComponent(jLabel_Contraseña_Usuario))
                                     .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
                                         .addGap(113, 113, 113)
-                                        .addComponent(jLabel_Contraseña_Usuario1)
-                                        .addGap(110, 110, 110))
-                                    .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jTextField_NombreCanal)
-                                        .addComponent(jTextField_NombreUsuario)
-                                        .addComponent(jTextField_Categorias)
-                                        .addComponent(jTextField_CorreoElectronico)
-                                        .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                        .addComponent(jLabel_Contraseña_Usuario1))
+                                    .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                        .addGap(14, 14, 14)
+                        .addGap(8, 8, 8)
                         .addComponent(jButton_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17))))
             .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton_IniciaSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(123, 123, 123)
+                .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(jLabel1))
+                    .addComponent(jButton_IniciaSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel_RegistrarUsuarioLayout.setVerticalGroup(
             jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,9 +307,9 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                 .addComponent(jTextField_NombreCanal, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jTextField_CorreoElectronico, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField_Categorias, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel_Contraseña_Usuario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -240,10 +322,10 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                     .addComponent(jButton_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jButton_IniciaSesion))
-                .addGap(42, 42, 42))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton_IniciaSesion)
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -254,7 +336,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_RegistrarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 501, Short.MAX_VALUE)
+            .addComponent(jPanel_RegistrarUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -294,17 +376,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField_CorreoElectronicoActionPerformed
 
     /**
-     * Captura el evento de acción en el campo "Categorías". Actualiza la
-     * variable global `categorias` con el texto ingresado.
-     *
-     * @param evt Evento de acción generado por el campo de texto.
-     */
-    private void jTextField_CategoriasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_CategoriasActionPerformed
-        // TODO add your handling code here:
-        categorias = jTextField_Categorias.getText();
-    }//GEN-LAST:event_jTextField_CategoriasActionPerformed
-
-    /**
      * Captura el evento de acción al hacer clic en el botón "Registrar
      * Usuario". Gestiona la validación de campos, la conexión a la base de
      * datos, y la lógica para registrar un nuevo usuario en MongoDB si no
@@ -320,7 +391,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         nombreUsuario = jTextField_NombreUsuario.getText().trim().toLowerCase();
         nombreCanal = jTextField_NombreCanal.getText().trim().toLowerCase();
         correoElectronico = jTextField_CorreoElectronico.getText().trim().toLowerCase();
-        String categoriasText = jTextField_Categorias.getText().trim();
+        List<String> categorias = juntarCategorias();
         contraseña = new String(jPasswordField_Contraseña.getPassword()).trim();
         confirmarContraseña = new String(jPasswordField_Contraseña_Confirmar.getPassword()).trim();
 
@@ -343,10 +414,10 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             errorMessage.append("- Correo Electrónico\n");
             highlightField(jTextField_CorreoElectronico);
         }
-        if (categoriasText.isEmpty()) {
+        if (categorias.isEmpty()) {
             isValid = false;
             errorMessage.append("- Categorías\n");
-            highlightField(jTextField_Categorias);
+            highlightField(jPanelCategorias);
         }
         if (contraseña.isEmpty()) {
             isValid = false;
@@ -372,9 +443,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             highlightField(jPasswordField_Contraseña_Confirmar);
             return;
         }
-
-        // Convierte las categorías en un arreglo
-        String[] categoriasArray = categoriasText.split(",\\s*");
 
         // Obtiene la fecha y hora actual
         LocalDateTime now = LocalDateTime.now();
@@ -410,11 +478,13 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                         .append("correo_electronico", correoElectronico)
                         .append("contraseña", contraseña) // Contraseña sin hash (mejor usar hashing)
                         .append("fecha_registro", fechaRegistro)
-                        .append("categorias", Arrays.asList(categoriasArray));
+                        .append("categorias", categorias);
                 try {
                     usuariosCollection.insertOne(newUser);
                     JOptionPane.showMessageDialog(this, "Usuario registrado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    clearFields(); // Limpia los campos tras el registro exitoso
+                    Ventana_IniciarSesion form = new Ventana_IniciarSesion(PaginaOrigen);
+                    form.setVisible(true);
+                    dispose();
                 } catch (MongoException e) {
                     JOptionPane.showMessageDialog(this, "Error al registrar el usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -431,7 +501,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jTextField_NombreUsuario.setText("");
         jTextField_NombreCanal.setText("");
         jTextField_CorreoElectronico.setText("");
-        jTextField_Categorias.setText("");
         jPasswordField_Contraseña.setText("");
         jPasswordField_Contraseña_Confirmar.setText("");
 
@@ -444,7 +513,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jTextField_NombreUsuario.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         jTextField_NombreCanal.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         jTextField_CorreoElectronico.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        jTextField_Categorias.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         jPasswordField_Contraseña.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         jPasswordField_Contraseña_Confirmar.setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }
@@ -474,12 +542,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                 resetFieldColorOnFocus(jTextField_CorreoElectronico);
             }
         });
-        jTextField_Categorias.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent evt) {
-                resetFieldColorOnFocus(jTextField_Categorias);
-            }
-        });
         jPasswordField_Contraseña.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent evt) {
@@ -497,7 +559,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         addKeyListenerToField(jTextField_NombreUsuario);
         addKeyListenerToField(jTextField_NombreCanal);
         addKeyListenerToField(jTextField_CorreoElectronico);
-        addKeyListenerToField(jTextField_Categorias);
         addKeyListenerToField(jPasswordField_Contraseña);
         addKeyListenerToField(jPasswordField_Contraseña_Confirmar);
     }//GEN-LAST:event_jButton_RegistrarUsuarioActionPerformed
@@ -602,13 +663,41 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             }
         });
     }
+    
+    private List juntarCategorias(){
+        List<String> categorias = new ArrayList<>();
+        if (chkVideojuegos.isSelected()){
+            categorias.add("Videojuegos");
+        }
+        if (chkPeliculas.isSelected()){
+            categorias.add("Peliculas");
+        }
+        if (chkFamilia.isSelected()){
+            categorias.add("Familia");
+        }
+        if (chkMusica.isSelected()){
+            categorias.add("Musica");
+        }
+        if (chkTecnologia.isSelected()) {
+            categorias.add("Tecnologia");
+        }
+        if (chkBelleza.isSelected()) {
+            categorias.add("Belleza");
+        }
+        if(chkCocina.isSelected()){
+            categorias.add("Cocina");
+        }
+        if(chkVlog.isSelected()){
+            categorias.add("Vlog");
+        }
+        return categorias;
+    }
 
     public void initializeFields() {
         // Call the method for each JTextField
         addFocusBehavior(jTextField_NombreUsuario);
         addFocusBehavior(jTextField_NombreCanal);
         addFocusBehavior(jTextField_CorreoElectronico);
-        addFocusBehavior(jTextField_Categorias);
     }
 
     /**
@@ -647,18 +736,27 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chkBelleza;
+    private javax.swing.JCheckBox chkCocina;
+    private javax.swing.JCheckBox chkFamilia;
+    private javax.swing.JCheckBox chkMusica;
+    private javax.swing.JCheckBox chkPeliculas;
+    private javax.swing.JCheckBox chkTecnologia;
+    private javax.swing.JCheckBox chkVideojuegos;
+    private javax.swing.JCheckBox chkVlog;
     private javax.swing.JButton jButton_Cancelar;
     private javax.swing.JButton jButton_IniciaSesion;
     private javax.swing.JButton jButton_RegistrarUsuario;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel_Contraseña_Usuario;
     private javax.swing.JLabel jLabel_Contraseña_Usuario1;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_Registro_UAA;
+    private javax.swing.JPanel jPanelCategorias;
     private javax.swing.JPanel jPanel_RegistrarUsuario;
     private javax.swing.JPasswordField jPasswordField_Contraseña;
     private javax.swing.JPasswordField jPasswordField_Contraseña_Confirmar;
-    private javax.swing.JTextField jTextField_Categorias;
     private javax.swing.JTextField jTextField_CorreoElectronico;
     private javax.swing.JTextField jTextField_NombreCanal;
     private javax.swing.JTextField jTextField_NombreUsuario;
