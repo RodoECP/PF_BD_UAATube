@@ -65,14 +65,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     public VentanaPrincipal(Document Usuario, MongoDatabase database) {
-        initComponents();
         this.database = database;
-        gridFSBucket = GridFSBuckets.create(database);
+        gridFSBucket = GridFSBuckets.create(this.database);
+        initComponents();
         initializeVideoPlayback();
         loadVideoList();
         addMediaControls();
-        this.Usuario = Usuario;
         checarSesion();
+        this.Usuario = Usuario;
     }
 
     private void connectToMongoDB() {
@@ -109,34 +109,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             mediaPlayer = null; // No video loaded initially
         });
     }
-/*
-    private void loadVideoList() {
-        List<String> videoNames = new ArrayList<>();
-        alistarTabla();
-        try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
-            while (cursor.hasNext()) {
-                GridFSFile file = cursor.next();
-                String filename = file.getFilename();
-                // Filter files based on video extensions
-                if (filename.toLowerCase().endsWith(".mp4")
-                        || filename.toLowerCase().endsWith(".avi")
-                        || filename.toLowerCase().endsWith(".mkv")
-                        || filename.toLowerCase().endsWith(".mov")
-                        || filename.toLowerCase().endsWith(".wmv")) {
-
-                    DefaultTableModel model = (DefaultTableModel) jTableListaVideos.getModel();
-                    ImageIcon icon = new ImageIcon(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
-                    Image img = icon.getImage().getScaledInstance(112, 63, java.awt.Image.SCALE_SMOOTH);
-                    ImageIcon newIcon = new ImageIcon(img);
-                    model.addRow(new Object[]{newIcon, obtenerTitulo(file.getObjectId())});
-                    ListaVideos.add(file.getObjectId());
-                    System.out.println(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
-                    videoNames.add(filename);
-                }
-            }
-        }
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
-    }   */
     
     private void loadVideoList() {
         ListaVideos.clear();
@@ -319,7 +291,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         fastForwardButton = new JButton("Fast Forward");
 
         volumeSlider = new JSlider(0, 100, 50); // Default value set to 50%
-        jLabel_Volumen = new JLabel("Volume: 50%");  // Default volume label
 
         // Add action listeners for media controls (play, pause, stop, rewind, fast forward)
         playButton.addActionListener(e -> Platform.runLater(() -> {
@@ -361,7 +332,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             });
 
             // Update the jLabel_Volumen to show the current volume percentage
-            SwingUtilities.invokeLater(() -> jLabel_Volumen.setText("Volume: " + volumeValue + "%"));
         });
 
         // Create control panel
@@ -404,12 +374,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jButton_FastForwardVideo = new javax.swing.JButton();
         jButton_VolumeUp = new javax.swing.JButton();
         jButton_VolumeDownIcon = new javax.swing.JButton();
-        jLabel_Volumen = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableListaVideos = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jComboBoxFiltros = new javax.swing.JComboBox<>();
         jButtonBuscar = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextAreaDescripcion = new javax.swing.JTextArea();
+        jLabelDescripcion = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextFieldCanal = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -464,11 +438,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jPanel_ReproducirVideo.setLayout(jPanel_ReproducirVideoLayout);
         jPanel_ReproducirVideoLayout.setHorizontalGroup(
             jPanel_ReproducirVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 862, Short.MAX_VALUE)
         );
         jPanel_ReproducirVideoLayout.setVerticalGroup(
             jPanel_ReproducirVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 580, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jButton_PlayVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PlayIcon.png"))); // NOI18N
@@ -519,10 +493,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 jButton_VolumeDownIconActionPerformed(evt);
             }
         });
-
-        jLabel_Volumen.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        jLabel_Volumen.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_Volumen.setText("Control de Volumen");
 
         jTableListaVideos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -580,14 +550,22 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        jTextAreaDescripcion.setColumns(20);
+        jTextAreaDescripcion.setRows(5);
+        jScrollPane2.setViewportView(jTextAreaDescripcion);
+
+        jLabelDescripcion.setText("Descripcion");
+
+        jLabel2.setText("Canal:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel_Icono_UAATube)
@@ -597,43 +575,49 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                                 .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButtonBuscar)
-                                .addGap(115, 115, 115))
-                            .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGap(121, 121, 121))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(252, 252, 252)
+                                        .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24)
+                                .addComponent(jLabel1))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnSubirVideo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel_OpcionCuenta1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel_Diagonal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel_OpcionCuenta2)))
+                        .addGap(56, 56, 56))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(252, 252, 252)
-                        .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnSubirVideo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_OpcionCuenta1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_Diagonal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_OpcionCuenta2)))
-                .addGap(56, 56, 56))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel_Volumen)
-                .addGap(439, 439, 439))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(94, 94, 94)
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextFieldCanal, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -653,31 +637,36 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                             .addComponent(jComboBoxFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButtonBuscar))))
                 .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_Volumen)
-                .addGap(1, 1, 1)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(9, 9, 9)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabelDescripcion)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(9, 9, 9)))
-                .addGap(91, 91, 91))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel2)
+                                .addComponent(jTextFieldCanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(80, 80, 80))))
         );
 
         javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
@@ -795,9 +784,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_VolumeDownIconActionPerformed
 
     private void jTableListaVideosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaVideosMouseClicked
-        System.out.println(jTableListaVideos.getValueAt(jTableListaVideos.getSelectedRow(), 1));
-        System.out.println(jTableListaVideos.getValueAt(jTableListaVideos.getSelectedRow(), 0));
         Platform.runLater(() -> playVideoFromGridFS(obtenerFilename(ListaVideos.get(jTableListaVideos.getSelectedRow()))));
+        cargarDatos(ListaVideos.get(jTableListaVideos.getSelectedRow()));
     }//GEN-LAST:event_jTableListaVideosMouseClicked
 
     private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
@@ -811,6 +799,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             jLabel_OpcionCuenta1.setText("Administrar Cuenta");
             jLabel_OpcionCuenta2.setText("Cerrar Sesion");
         }
+    }
+    
+    
+    private void cargarDatos(ObjectId fileID) {
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        jTextFieldCanal.setText(videoDoc.getString("autor"));
+        jTextAreaDescripcion.setText(videoDoc.getString("description"));
+        
     }
 
     //Metodo para sobreescribir los ajustes que netbeans asigna automaticamente a tablas
@@ -933,15 +932,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButton_VolumeUp;
     private javax.swing.JComboBox<String> jComboBoxFiltros;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabelDescripcion;
     private javax.swing.JLabel jLabel_Diagonal;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_OpcionCuenta1;
     private javax.swing.JLabel jLabel_OpcionCuenta2;
-    private javax.swing.JLabel jLabel_Volumen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_ReproducirVideo;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableListaVideos;
+    private javax.swing.JTextArea jTextAreaDescripcion;
+    private javax.swing.JTextField jTextFieldCanal;
     private javax.swing.JTextField jTextField_BarraBusqueda;
     // End of variables declaration//GEN-END:variables
 }
