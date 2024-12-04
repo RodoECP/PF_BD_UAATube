@@ -1,10 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Main;
 
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
 import org.bson.Document;
 
 /**
@@ -15,10 +17,10 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
 
     private static Document Usuario;
     private static String PaginaOrigen;
-    
+
     //Variable para almacenar la conexion a la base de datos
     private static MongoDatabase database = null;
-    
+
     /**
      * Creates new form Ventana_AdmCuenta
      */
@@ -27,6 +29,61 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         this.Usuario = Usuario;
         this.PaginaOrigen = PaginaOrigen;
         this.database = database;
+
+      // Fill fields with current user data
+        txtUsuario.setText(Usuario.getString("nombre_usuario"));
+        txtCanal.setText(Usuario.getString("nombre_canal"));
+        txtCorreo.setText(Usuario.getString("correo_electronico"));
+        
+        // Populate checkboxes based on the user's current categories
+        List<String> categorias = Usuario.getList("categorias", String.class);
+        chkVideojuegos.setSelected(categorias.contains("Videojuegos"));
+        chkPeliculas.setSelected(categorias.contains("Peliculas"));
+        chkFamilia.setSelected(categorias.contains("Familia"));
+        chkMusica.setSelected(categorias.contains("Musica"));
+        chkTecnologia.setSelected(categorias.contains("Tecnologia"));
+        chkBelleza.setSelected(categorias.contains("Belleza"));
+        chkCocina.setSelected(categorias.contains("Cocina"));
+        chkVlog.setSelected(categorias.contains("Vlog"));
+    }
+
+    private List juntarCategorias() {
+        List<String> categorias = new ArrayList<>();
+        if (chkVideojuegos.isSelected()) {
+            categorias.add("Videojuegos");
+        }
+        if (chkPeliculas.isSelected()) {
+            categorias.add("Peliculas");
+        }
+        if (chkFamilia.isSelected()) {
+            categorias.add("Familia");
+        }
+        if (chkMusica.isSelected()) {
+            categorias.add("Musica");
+        }
+        if (chkTecnologia.isSelected()) {
+            categorias.add("Tecnologia");
+        }
+        if (chkBelleza.isSelected()) {
+            categorias.add("Belleza");
+        }
+        if (chkCocina.isSelected()) {
+            categorias.add("Cocina");
+        }
+        if (chkVlog.isSelected()) {
+            categorias.add("Vlog");
+        }
+        return categorias;
+    }
+
+    private void cerrarVentana() {
+        if (PaginaOrigen == "PaginaPrincipal") {
+            VentanaPrincipal form = new VentanaPrincipal(Usuario, database);
+            form.setVisible(true);
+            dispose();
+        } else {
+            System.out.println(PaginaOrigen);
+        }
     }
 
     /**
@@ -38,8 +95,13 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        lblContra = new javax.swing.JLabel();
         lblIcono = new javax.swing.JLabel();
+        btnAplicarCambios = new javax.swing.JButton();
         lblTitulo = new javax.swing.JLabel();
+        txtUsuario = new javax.swing.JTextField();
+        btnCancelar = new javax.swing.JButton();
         jPanelCategorias = new javax.swing.JPanel();
         chkFamilia = new javax.swing.JCheckBox();
         chkMusica = new javax.swing.JCheckBox();
@@ -50,24 +112,52 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         chkCocina = new javax.swing.JCheckBox();
         chkBelleza = new javax.swing.JCheckBox();
         lblCategorias = new javax.swing.JLabel();
-        txtUsuario = new javax.swing.JTextField();
         lblUsuario = new javax.swing.JLabel();
         txtCanal = new javax.swing.JTextField();
         lblCanal = new javax.swing.JLabel();
         txtCorreo = new javax.swing.JTextField();
         lblCorreo = new javax.swing.JLabel();
-        txtConfirmarContra = new javax.swing.JTextField();
         lblConfirmaContra = new javax.swing.JLabel();
-        txtContra = new javax.swing.JTextField();
-        lblContra = new javax.swing.JLabel();
-        btnAplicarCambios = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
+        jPasswordField_ContraseñaUsuario = new javax.swing.JPasswordField();
+        jPasswordField_Confirmar_ContraseñaUsuario = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(29, 113, 150));
+
+        lblContra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblContra.setForeground(new java.awt.Color(255, 255, 255));
+        lblContra.setText("Contraseña");
+
         lblIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
 
+        btnAplicarCambios.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnAplicarCambios.setText("Aplicar Cambios");
+        btnAplicarCambios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAplicarCambiosActionPerformed(evt);
+            }
+        });
+
+        lblTitulo.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
         lblTitulo.setText("Administrar Cuenta");
+
+        txtUsuario.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        txtUsuario.setText("Usuario");
+        txtUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsuarioActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         jPanelCategorias.setBackground(new java.awt.Color(29, 113, 150));
         jPanelCategorias.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -75,30 +165,39 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         jPanelCategorias.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
 
         chkFamilia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkFamilia.setForeground(new java.awt.Color(255, 255, 255));
         chkFamilia.setText("Comedia");
 
         chkMusica.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkMusica.setForeground(new java.awt.Color(255, 255, 255));
         chkMusica.setText("Musica");
 
         chkPeliculas.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkPeliculas.setForeground(new java.awt.Color(255, 255, 255));
         chkPeliculas.setText("Peliculas");
 
         chkVideojuegos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVideojuegos.setForeground(new java.awt.Color(255, 255, 255));
         chkVideojuegos.setText("Videojuegos");
 
         chkVlog.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVlog.setForeground(new java.awt.Color(255, 255, 255));
         chkVlog.setText("Vlog");
 
         chkTecnologia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkTecnologia.setForeground(new java.awt.Color(255, 255, 255));
         chkTecnologia.setText("Tecnología");
 
         chkCocina.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkCocina.setForeground(new java.awt.Color(255, 255, 255));
         chkCocina.setText("Cocina");
 
         chkBelleza.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkBelleza.setForeground(new java.awt.Color(255, 255, 255));
         chkBelleza.setText("Belleza");
 
         lblCategorias.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCategorias.setForeground(new java.awt.Color(255, 255, 255));
         lblCategorias.setText("Categorias");
 
         javax.swing.GroupLayout jPanelCategoriasLayout = new javax.swing.GroupLayout(jPanelCategorias);
@@ -149,67 +248,88 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        txtUsuario.setText("Usuario");
-
+        lblUsuario.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblUsuario.setForeground(new java.awt.Color(255, 255, 255));
         lblUsuario.setText("Usuario");
 
+        txtCanal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtCanal.setText("Canal");
+        txtCanal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCanalActionPerformed(evt);
+            }
+        });
 
+        lblCanal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCanal.setForeground(new java.awt.Color(255, 255, 255));
         lblCanal.setText("Canal");
 
+        txtCorreo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtCorreo.setText("Correo");
+        txtCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCorreoActionPerformed(evt);
+            }
+        });
 
+        lblCorreo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCorreo.setForeground(new java.awt.Color(255, 255, 255));
         lblCorreo.setText("Correo");
 
-        txtConfirmarContra.setText("Confirmar Contraseña");
-
+        lblConfirmaContra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblConfirmaContra.setForeground(new java.awt.Color(255, 255, 255));
         lblConfirmaContra.setText("Confirma Contraseña");
 
-        txtContra.setText("Contraseña");
+        jPasswordField_ContraseñaUsuario.setText("jPasswordField1");
+        jPasswordField_ContraseñaUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField_ContraseñaUsuarioActionPerformed(evt);
+            }
+        });
 
-        lblContra.setText("Contraseña");
+        jPasswordField_Confirmar_ContraseñaUsuario.setText("jPasswordField1");
+        jPasswordField_Confirmar_ContraseñaUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed(evt);
+            }
+        });
 
-        btnAplicarCambios.setText("Aplicar Cambios");
-
-        btnCancelar.setText("Cancelar");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanelCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtUsuario)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblIcono)
-                            .addGap(18, 18, 18)
-                            .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(lblUsuario)
-                        .addComponent(txtCanal, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
-                        .addComponent(lblCanal)
-                        .addComponent(lblCorreo)
-                        .addComponent(txtCorreo))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
                             .addComponent(btnAplicarCambios)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(163, 163, 163)
                             .addComponent(btnCancelar))
-                        .addComponent(txtContra, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(lblContra, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblConfirmaContra, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtConfirmarContra, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(205, Short.MAX_VALUE))
+                        .addComponent(lblConfirmaContra, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(txtUsuario)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblIcono)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblTitulo))
+                    .addComponent(lblUsuario)
+                    .addComponent(txtCanal)
+                    .addComponent(lblCanal)
+                    .addComponent(lblCorreo)
+                    .addComponent(txtCorreo)
+                    .addComponent(jPasswordField_ContraseñaUsuario)
+                    .addComponent(jPasswordField_Confirmar_ContraseñaUsuario))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblIcono)
-                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblIcono))
                 .addGap(26, 26, 26)
                 .addComponent(lblUsuario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -227,20 +347,105 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(lblContra)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtContra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jPasswordField_ContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21)
                 .addComponent(lblConfirmaContra)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtConfirmarContra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jPasswordField_Confirmar_ContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(54, 54, 54)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAplicarCambios)
                     .addComponent(btnCancelar))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        // TODO add your handling code here:
+        cerrarVentana();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsuarioActionPerformed
+
+    private void txtCanalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCanalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCanalActionPerformed
+
+    private void txtCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCorreoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCorreoActionPerformed
+
+    private void btnAplicarCambiosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAplicarCambiosActionPerformed
+        // TODO add your handling code here:
+     String nombreUsuario = txtUsuario.getText().trim();
+        String nombreCanal = txtCanal.getText().trim();
+        String correoElectronico = txtCorreo.getText().trim();
+        String contraseña = new String(jPasswordField_ContraseñaUsuario.getPassword());
+        String confirmarContra = new String(jPasswordField_Confirmar_ContraseñaUsuario.getPassword());
+        List<String> categorias = juntarCategorias();
+
+        // Check if passwords match
+        if (!contraseña.equals(confirmarContra)) {
+            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Verify current password
+        if (!contraseña.equals(Usuario.getString("contraseña"))) {
+            JOptionPane.showMessageDialog(this, "La contraseña actual no coincide.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Update user in database
+        try {
+            MongoCollection<Document> collection = database.getCollection("usuarios");
+
+            // Create the update document
+            collection.updateOne(
+                Filters.eq("_id", Usuario.getObjectId("_id")),
+                Updates.combine(
+                    Updates.set("nombre_usuario", nombreUsuario),
+                    Updates.set("nombre_canal", nombreCanal),
+                    Updates.set("correo_electronico", correoElectronico),
+                    Updates.set("categorias", categorias)
+                )
+            );
+
+            // Update local user data
+            Usuario.put("nombre_usuario", nombreUsuario);
+            Usuario.put("nombre_canal", nombreCanal);
+            Usuario.put("correo_electronico", correoElectronico);
+            Usuario.put("categorias", categorias);
+
+            JOptionPane.showMessageDialog(this, "Información actualizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            cerrarVentana();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar la información: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAplicarCambiosActionPerformed
+
+    private void jPasswordField_ContraseñaUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_ContraseñaUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField_ContraseñaUsuarioActionPerformed
+
+    private void jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -288,7 +493,10 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkTecnologia;
     private javax.swing.JCheckBox chkVideojuegos;
     private javax.swing.JCheckBox chkVlog;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelCategorias;
+    private javax.swing.JPasswordField jPasswordField_Confirmar_ContraseñaUsuario;
+    private javax.swing.JPasswordField jPasswordField_ContraseñaUsuario;
     private javax.swing.JLabel lblCanal;
     private javax.swing.JLabel lblCategorias;
     private javax.swing.JLabel lblConfirmaContra;
@@ -298,8 +506,6 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblUsuario;
     private javax.swing.JTextField txtCanal;
-    private javax.swing.JTextField txtConfirmarContra;
-    private javax.swing.JTextField txtContra;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables

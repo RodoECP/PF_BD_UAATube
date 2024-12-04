@@ -51,11 +51,10 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
 
 //Variable para almacenar la pagina de donde se abrió esta
     private static String PaginaOrigen;
-    
+
     //Variable para almacenar la conexion a la base de datos
     private static MongoDatabase database;
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -601,7 +600,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordField_Contraseña_ConfirmarActionPerformed
 
     private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
-        if (PaginaOrigen == "PaginaPrincipal"){
+        if (PaginaOrigen == "PaginaPrincipal") {
             VentanaPrincipal form = new VentanaPrincipal(null, database);
             form.setVisible(true);
             this.dispose();
@@ -615,7 +614,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         form.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton_IniciaSesionActionPerformed
-
 
     private void removeInitialFocus() {
         // Request focus on a non-input component, such as the main panel
@@ -654,19 +652,19 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             }
         });
     }
-    
-    private List juntarCategorias(){
+
+    private List juntarCategorias() {
         List<String> categorias = new ArrayList<>();
-        if (chkVideojuegos.isSelected()){
+        if (chkVideojuegos.isSelected()) {
             categorias.add("Videojuegos");
         }
-        if (chkPeliculas.isSelected()){
+        if (chkPeliculas.isSelected()) {
             categorias.add("Peliculas");
         }
-        if (chkFamilia.isSelected()){
+        if (chkFamilia.isSelected()) {
             categorias.add("Familia");
         }
-        if (chkMusica.isSelected()){
+        if (chkMusica.isSelected()) {
             categorias.add("Musica");
         }
         if (chkTecnologia.isSelected()) {
@@ -675,10 +673,10 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         if (chkBelleza.isSelected()) {
             categorias.add("Belleza");
         }
-        if(chkCocina.isSelected()){
+        if (chkCocina.isSelected()) {
             categorias.add("Cocina");
         }
-        if(chkVlog.isSelected()){
+        if (chkVlog.isSelected()) {
             categorias.add("Vlog");
         }
         return categorias;

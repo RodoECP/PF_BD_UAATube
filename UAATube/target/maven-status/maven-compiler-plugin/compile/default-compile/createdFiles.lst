@@ -1,5 +1,6 @@
 Main\Ventana_SubirVideo.class
 Main\VentanaPrincipal$2.class
+Main\Ventana_AdmCuenta$4.class
 Main\VentanaPrincipal$9.class
 Main\Ventana_RegistrarUsuario$15.class
 Main\Ventana_SubirVideo$6.class
@@ -21,7 +22,9 @@ Main\Ventana_RegistrarUsuario$14.class
 Main\VentanaPrincipal.class
 Main\Ventana_AdmCuenta.class
 Main\VentanaPrincipal$6.class
+Main\Ventana_AdmCuenta$3.class
 Main\Ventana_SubirVideo$3.class
+Main\Ventana_AdmCuenta$7.class
 Main\Ventana_IniciarSesion$2.class
 Main\Ventana_RegistrarUsuario$11.class
 Main\Ventana_RegistrarUsuario$1.class
@@ -36,11 +39,13 @@ Main\Ventana_IniciarSesion$5.class
 Main\Ventana_SubirVideo$1.class
 Main\VentanaPrincipal$4.class
 Main\Ventana_IniciarSesion$8.class
+Main\Ventana_AdmCuenta$6.class
 Conexion\conexion.class
 Main\Ventana_RegistrarUsuario.class
 Main\VentanaPrincipal$1.class
 Main\Ventana_IniciarSesion.class
 Main\Ventana_IniciarSesion$1.class
+Main\Ventana_AdmCuenta$8.class
 Main\VentanaPrincipal$5.class
 Main\Ventana_RegistrarUsuario$3.class
 Main\Ventana_RegistrarUsuario$9.class
@@ -50,6 +55,8 @@ Main\Ventana_SubirVideo$8.class
 Main\Ventana_IniciarSesion$4.class
 Main\Ventana_SubirVideo$2.class
 Main\VentanaPrincipal$10.class
+Main\Ventana_AdmCuenta$2.class
+Main\Ventana_AdmCuenta$5.class
 Main\Ventana_IniciarSesion$7.class
 Main\Ventana_SubirVideo$5.class
 Main\Ventana_RegistrarUsuario$16.class

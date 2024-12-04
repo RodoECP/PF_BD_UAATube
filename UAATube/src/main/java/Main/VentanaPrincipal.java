@@ -44,7 +44,7 @@ import org.bson.types.ObjectId;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
 
-   private JFXPanel jfxPanel;
+    private JFXPanel jfxPanel;
     private MediaPlayer mediaPlayer;
     private GridFSBucket gridFSBucket;
     private JSlider volumeSlider;
@@ -52,7 +52,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private JButton playButton, pauseButton, stopButton, rewindButton, fastForwardButton;
     private static Document Usuario;
     private static MongoDatabase database;
-    List <ObjectId> ListaVideos = new ArrayList<>();
+    List<ObjectId> ListaVideos = new ArrayList<>();
 
     //Constructor que se utilizara solo para el inicio de la aplicacion
     public VentanaPrincipal() {
@@ -63,9 +63,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         addMediaControls();
         checarSesion();
     }
-    
-    
-    public VentanaPrincipal (Document Usuario, MongoDatabase database){
+
+    public VentanaPrincipal(Document Usuario, MongoDatabase database) {
         initComponents();
         this.database = database;
         gridFSBucket = GridFSBuckets.create(database);
@@ -80,8 +79,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         database = conexion.crearConexion("UAATube");
         gridFSBucket = GridFSBuckets.create(database);
     }
-   
-private void initializeVideoPlayback() {
+
+    private void initializeVideoPlayback() {
         jfxPanel = new JFXPanel();
         jPanel_ReproducirVideo.setLayout(new BorderLayout());
         jPanel_ReproducirVideo.add(jfxPanel, BorderLayout.CENTER);
@@ -99,7 +98,7 @@ private void initializeVideoPlayback() {
             // Set the initial size to match the current resolution of the panel
             double initialWidth = jPanel_ReproducirVideo.getWidth();
             double initialHeight = jPanel_ReproducirVideo.getHeight();
-            
+
             StackPane root = new StackPane();
             Scene scene = new Scene(root, initialWidth, initialHeight);
             jfxPanel.setScene(scene);
@@ -111,78 +110,75 @@ private void initializeVideoPlayback() {
         });
     }
 
-private void loadVideoList() {
-    List<String> videoNames = new ArrayList<>();
-    alistarTabla();
-    try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
-        while (cursor.hasNext()) {
-            GridFSFile file = cursor.next();
-            String filename = file.getFilename();
-            // Filter files based on video extensions
-            if (filename.toLowerCase().endsWith(".mp4") ||
-                filename.toLowerCase().endsWith(".avi") ||
-                filename.toLowerCase().endsWith(".mkv") ||
-                filename.toLowerCase().endsWith(".mov") ||
-                filename.toLowerCase().endsWith(".wmv")) {
-                
-                DefaultTableModel model = (DefaultTableModel) jTableListaVideos.getModel();
-                ImageIcon icon = new ImageIcon(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
-                Image img = icon.getImage().getScaledInstance(112,63, java.awt.Image.SCALE_SMOOTH);
-                ImageIcon newIcon = new ImageIcon(img);
-                model.addRow(new Object[]{newIcon,obtenerTitulo(file.getObjectId())});
-                ListaVideos.add(file.getObjectId());
-                System.out.println(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
-                videoNames.add(filename);
+    private void loadVideoList() {
+        List<String> videoNames = new ArrayList<>();
+        alistarTabla();
+        try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
+            while (cursor.hasNext()) {
+                GridFSFile file = cursor.next();
+                String filename = file.getFilename();
+                // Filter files based on video extensions
+                if (filename.toLowerCase().endsWith(".mp4")
+                        || filename.toLowerCase().endsWith(".avi")
+                        || filename.toLowerCase().endsWith(".mkv")
+                        || filename.toLowerCase().endsWith(".mov")
+                        || filename.toLowerCase().endsWith(".wmv")) {
+
+                    DefaultTableModel model = (DefaultTableModel) jTableListaVideos.getModel();
+                    ImageIcon icon = new ImageIcon(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
+                    Image img = icon.getImage().getScaledInstance(112, 63, java.awt.Image.SCALE_SMOOTH);
+                    ImageIcon newIcon = new ImageIcon(img);
+                    model.addRow(new Object[]{newIcon, obtenerTitulo(file.getObjectId())});
+                    ListaVideos.add(file.getObjectId());
+                    System.out.println(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
+                    videoNames.add(filename);
+                }
             }
         }
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
+        jComboBox_ListaVideos.setModel(model);
+
+        jComboBox_ListaVideos.addActionListener(this::onVideoSelected);
     }
-    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
-    jComboBox_ListaVideos.setModel(model);
 
-    jComboBox_ListaVideos.addActionListener(this::onVideoSelected);
-}
+    private String obtenerTitulo(ObjectId fileID) {
+        String titulo = "";
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        titulo = videoDoc.getString("title");
+        return titulo;
+    }
 
-    
+    private ObjectId obtenerMiniId(ObjectId fileID) {
+        ObjectId miniId;
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        miniId = videoDoc.getObjectId("thumbnailId");
+        return miniId;
+    }
 
-private String obtenerTitulo(ObjectId fileID){
-    String titulo = "";
-    MongoCollection<Document> video = database.getCollection("Videos");
-            Document videoDoc = video.find(Filters.and(
-                    Filters.eq("videoId", fileID)
-            )).first();
-    titulo = videoDoc.getString("title");
-    return titulo;
-}
+    private String obtenerFilename(ObjectId fileID) {
+        String filename = "";
+        MongoCollection<Document> archivo = database.getCollection("fs.files");
+        Document videoDoc = archivo.find(Filters.and(
+                Filters.eq("_id", fileID)
+        )).first();
+        filename = videoDoc.getString("filename");
+        return filename;
+    }
 
-private ObjectId obtenerMiniId(ObjectId fileID){
-    ObjectId miniId;
-    MongoCollection<Document> video = database.getCollection("Videos");
-            Document videoDoc = video.find(Filters.and(
-                    Filters.eq("videoId", fileID)
-            )).first();
-    miniId = videoDoc.getObjectId("thumbnailId");
-    return miniId;
-}
-
-private String obtenerFilename(ObjectId fileID){
-    String filename = "";
-    MongoCollection<Document> archivo = database.getCollection("fs.files");
-            Document videoDoc = archivo.find(Filters.and(
-                    Filters.eq("_id", fileID)
-            )).first();
-    filename = videoDoc.getString("filename");
-    return filename;
-}
-
-
-private void onVideoSelected(ActionEvent e) {
+    private void onVideoSelected(ActionEvent e) {
         String selectedVideo = (String) jComboBox_ListaVideos.getSelectedItem();
         if (selectedVideo != null) {
             Platform.runLater(() -> playVideoFromGridFS(selectedVideo));
         }
     }
 
-private void playVideoFromGridFS(String filename) {
+    private void playVideoFromGridFS(String filename) {
         stopVideo(); // Stop any currently playing video
         File videoFile = downloadVideoFromGridFS(filename);
         if (videoFile != null) {
@@ -190,7 +186,7 @@ private void playVideoFromGridFS(String filename) {
             mediaPlayer = new MediaPlayer(media);
             MediaView mediaView = (MediaView) ((StackPane) jfxPanel.getScene().getRoot()).getChildren().get(0);
             mediaView.setMediaPlayer(mediaPlayer);
-            
+
             // Set initial size based on the current panel dimensions
             updateVideoSize();
 
@@ -243,7 +239,7 @@ private void playVideoFromGridFS(String filename) {
         }
         return null;
     }
-    
+
     private File downloadImageFromGridFS(String filename) {
         try {
             GridFSFile gridFSFile = gridFSBucket.find(new org.bson.Document("filename", filename)).first();
@@ -266,15 +262,14 @@ private void playVideoFromGridFS(String filename) {
         }
         return null;
     }
-    
-    
-     private void stopVideo() {
+
+    private void stopVideo() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
     }
-     
-     private void addMediaControls() {
+
+    private void addMediaControls() {
         // Create control buttons
         playButton = new JButton("Play");
         pauseButton = new JButton("Pause");
@@ -339,7 +334,6 @@ private void playVideoFromGridFS(String filename) {
         controlsPanel.add(new JLabel("Volume:"));
         controlsPanel.add(volumeSlider);
 
-
         // Add the control panel below the video
         add(controlsPanel, BorderLayout.SOUTH);
     }
@@ -373,6 +367,7 @@ private void playVideoFromGridFS(String filename) {
         jLabel_Volumen = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableListaVideos = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -548,7 +543,7 @@ private void playVideoFromGridFS(String filename) {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel_Icono_UAATube)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
                                 .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(48, 48, 48)
                                 .addComponent(btnSubirVideo))
@@ -580,23 +575,27 @@ private void playVideoFromGridFS(String filename) {
                         .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(133, 133, 133))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(48, 48, 48)
-                                .addComponent(jLabel_OpcionCuenta1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel_Diagonal)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel_OpcionCuenta2))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(168, 168, 168))))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel1)
+                        .addGap(56, 56, 56))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(jLabel_OpcionCuenta1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_Diagonal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_OpcionCuenta2)
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel_Icono_UAATube))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -604,15 +603,19 @@ private void playVideoFromGridFS(String filename) {
                             .addComponent(jLabel_OpcionCuenta1)
                             .addComponent(jLabel_Diagonal)
                             .addComponent(jLabel_OpcionCuenta2)
-                            .addComponent(btnSubirVideo)))
+                            .addComponent(btnSubirVideo))))
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel_Icono_UAATube)))
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -627,7 +630,8 @@ private void playVideoFromGridFS(String filename) {
                                 .addGap(1, 1, 1)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(9, 9, 9)))
                         .addGap(91, 91, 91))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -676,7 +680,7 @@ private void playVideoFromGridFS(String filename) {
     }//GEN-LAST:event_jLabel_OpcionCuenta1MouseClicked
 
     private void btnSubirVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubirVideoActionPerformed
-        Ventana_SubirVideo form = new Ventana_SubirVideo(Usuario, "PaginaPrincipal",database);
+        Ventana_SubirVideo form = new Ventana_SubirVideo(Usuario, "PaginaPrincipal", database);
         form.setVisible(true);
         dispose(); // Cierra la ventana actual (opcional)
     }//GEN-LAST:event_btnSubirVideoActionPerformed
@@ -692,7 +696,7 @@ private void playVideoFromGridFS(String filename) {
             dispose();
         }
     }//GEN-LAST:event_jLabel_OpcionCuenta2MouseClicked
-
+                                      
     private void jButton_VolumeUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_VolumeUpActionPerformed
         // TODO add your handling code here:
         if (mediaPlayer != null) {
@@ -750,7 +754,7 @@ private void playVideoFromGridFS(String filename) {
 
     private void jTableListaVideosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaVideosMouseClicked
         System.out.println(jTableListaVideos.getValueAt(jTableListaVideos.getSelectedRow(), 1));
-        System.out.println(jTableListaVideos.getValueAt(jTableListaVideos.getSelectedRow(),0));
+        System.out.println(jTableListaVideos.getValueAt(jTableListaVideos.getSelectedRow(), 0));
         Platform.runLater(() -> playVideoFromGridFS(obtenerFilename(ListaVideos.get(jTableListaVideos.getSelectedRow()))));
     }//GEN-LAST:event_jTableListaVideosMouseClicked
 
@@ -762,9 +766,9 @@ private void playVideoFromGridFS(String filename) {
             jLabel_OpcionCuenta2.setText("Cerrar Sesion");
         }
     }
-    
+
     //Metodo para sobreescribir los ajustes que netbeans asigna automaticamente a tablas
-    private void alistarTabla(){
+    private void alistarTabla() {
         jTableListaVideos.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{},
                 new String[]{
@@ -867,8 +871,7 @@ private void playVideoFromGridFS(String filename) {
                 new VentanaPrincipal().setVisible(true);
             }
         });
-        
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -882,6 +885,7 @@ private void playVideoFromGridFS(String filename) {
     private javax.swing.JButton jButton_VolumeDownIcon;
     private javax.swing.JButton jButton_VolumeUp;
     private javax.swing.JComboBox<String> jComboBox_ListaVideos;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Diagonal;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_OpcionCuenta1;
