@@ -5,12 +5,17 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.model.Filters;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import static com.sun.java.accessibility.util.SwingEventMonitor.addListSelectionListener;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -25,11 +30,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
 
@@ -41,6 +52,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private JButton playButton, pauseButton, stopButton, rewindButton, fastForwardButton;
     private static Document Usuario;
     private static MongoDatabase database;
+    List <ObjectId> ListaVideos = new ArrayList<>();
 
     //Constructor que se utilizara solo para el inicio de la aplicacion
     public VentanaPrincipal() {
@@ -50,7 +62,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         loadVideoList();
         addMediaControls();
         checarSesion();
-        System.out.println(database);
     }
     
     
@@ -63,14 +74,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         addMediaControls();
         this.Usuario = Usuario;
         checarSesion();
-        System.out.println(this.database);
     }
 
     private void connectToMongoDB() {
         database = conexion.crearConexion("UAATube");
         gridFSBucket = GridFSBuckets.create(database);
     }
-    
+   
 private void initializeVideoPlayback() {
         jfxPanel = new JFXPanel();
         jPanel_ReproducirVideo.setLayout(new BorderLayout());
@@ -103,6 +113,7 @@ private void initializeVideoPlayback() {
 
 private void loadVideoList() {
     List<String> videoNames = new ArrayList<>();
+    alistarTabla();
     try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
         while (cursor.hasNext()) {
             GridFSFile file = cursor.next();
@@ -113,16 +124,56 @@ private void loadVideoList() {
                 filename.toLowerCase().endsWith(".mkv") ||
                 filename.toLowerCase().endsWith(".mov") ||
                 filename.toLowerCase().endsWith(".wmv")) {
+                
+                DefaultTableModel model = (DefaultTableModel) jTableListaVideos.getModel();
+                ImageIcon icon = new ImageIcon(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
+                Image img = icon.getImage().getScaledInstance(112,63, java.awt.Image.SCALE_SMOOTH);
+                ImageIcon newIcon = new ImageIcon(img);
+                model.addRow(new Object[]{newIcon,obtenerTitulo(file.getObjectId())});
+                ListaVideos.add(file.getObjectId());
+                System.out.println(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
                 videoNames.add(filename);
             }
         }
     }
-
     DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
     jComboBox_ListaVideos.setModel(model);
 
     jComboBox_ListaVideos.addActionListener(this::onVideoSelected);
 }
+
+    
+
+private String obtenerTitulo(ObjectId fileID){
+    String titulo = "";
+    MongoCollection<Document> video = database.getCollection("Videos");
+            Document videoDoc = video.find(Filters.and(
+                    Filters.eq("videoId", fileID)
+            )).first();
+    titulo = videoDoc.getString("title");
+    return titulo;
+}
+
+private ObjectId obtenerMiniId(ObjectId fileID){
+    ObjectId miniId;
+    MongoCollection<Document> video = database.getCollection("Videos");
+            Document videoDoc = video.find(Filters.and(
+                    Filters.eq("videoId", fileID)
+            )).first();
+    miniId = videoDoc.getObjectId("thumbnailId");
+    return miniId;
+}
+
+private String obtenerFilename(ObjectId fileID){
+    String filename = "";
+    MongoCollection<Document> archivo = database.getCollection("fs.files");
+            Document videoDoc = archivo.find(Filters.and(
+                    Filters.eq("_id", fileID)
+            )).first();
+    filename = videoDoc.getString("filename");
+    return filename;
+}
+
 
 private void onVideoSelected(ActionEvent e) {
         String selectedVideo = (String) jComboBox_ListaVideos.getSelectedItem();
@@ -192,7 +243,31 @@ private void playVideoFromGridFS(String filename) {
         }
         return null;
     }
+    
+    private File downloadImageFromGridFS(String filename) {
+        try {
+            GridFSFile gridFSFile = gridFSBucket.find(new org.bson.Document("filename", filename)).first();
+            if (gridFSFile != null) {
+                File tempFile = File.createTempFile("imagen", ".jpg");
+                tempFile.deleteOnExit();
 
+                try (GridFSDownloadStream downloadStream = gridFSBucket.openDownloadStream(gridFSFile.getObjectId()); FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = downloadStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, bytesRead);
+                    }
+                }
+
+                return tempFile;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    
      private void stopVideo() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -296,6 +371,8 @@ private void playVideoFromGridFS(String filename) {
         jButton_VolumeUp = new javax.swing.JButton();
         jButton_VolumeDownIcon = new javax.swing.JButton();
         jLabel_Volumen = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableListaVideos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -413,6 +490,53 @@ private void playVideoFromGridFS(String filename) {
         jLabel_Volumen.setForeground(new java.awt.Color(255, 255, 255));
         jLabel_Volumen.setText("jLabel1");
 
+        jTableListaVideos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "", ""
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableListaVideos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jTableListaVideos.setAutoscrolls(false);
+        jTableListaVideos.setColumnSelectionAllowed(true);
+        jTableListaVideos.setEditingColumn(0);
+        jTableListaVideos.setEditingRow(0);
+        jTableListaVideos.setMaximumSize(new java.awt.Dimension(290, 582));
+        jTableListaVideos.setMinimumSize(new java.awt.Dimension(290, 582));
+        jTableListaVideos.setRowHeight(63);
+        jTableListaVideos.setShowHorizontalLines(true);
+        jTableListaVideos.getTableHeader().setReorderingAllowed(false);
+        jTableListaVideos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableListaVideosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTableListaVideos);
+        jTableListaVideos.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (jTableListaVideos.getColumnModel().getColumnCount() > 0) {
+            jTableListaVideos.getColumnModel().getColumn(0).setResizable(false);
+            jTableListaVideos.getColumnModel().getColumn(0).setPreferredWidth(112);
+            jTableListaVideos.getColumnModel().getColumn(1).setResizable(false);
+            jTableListaVideos.getColumnModel().getColumn(1).setPreferredWidth(168);
+        }
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -424,7 +548,7 @@ private void playVideoFromGridFS(String filename) {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel_Icono_UAATube)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 287, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                                 .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(48, 48, 48)
                                 .addComponent(btnSubirVideo))
@@ -450,20 +574,28 @@ private void playVideoFromGridFS(String filename) {
                                 .addComponent(jLabel_Volumen)
                                 .addGap(51, 51, 51)))
                         .addGap(43, 43, 43)))
-                .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(133, 133, 133))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel_OpcionCuenta1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_Diagonal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_OpcionCuenta2))
-                    .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addComponent(jLabel_OpcionCuenta1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel_Diagonal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel_OpcionCuenta2))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(168, 168, 168))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
@@ -476,25 +608,30 @@ private void playVideoFromGridFS(String filename) {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel_Icono_UAATube)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel_Volumen)
-                        .addGap(1, 1, 1)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(91, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel_Volumen)
+                                .addGap(1, 1, 1)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(91, 91, 91))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(73, 73, 73))))
         );
 
         javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
@@ -611,6 +748,12 @@ private void playVideoFromGridFS(String filename) {
         }
     }//GEN-LAST:event_jButton_VolumeDownIconActionPerformed
 
+    private void jTableListaVideosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaVideosMouseClicked
+        System.out.println(jTableListaVideos.getValueAt(jTableListaVideos.getSelectedRow(), 1));
+        System.out.println(jTableListaVideos.getValueAt(jTableListaVideos.getSelectedRow(),0));
+        Platform.runLater(() -> playVideoFromGridFS(obtenerFilename(ListaVideos.get(jTableListaVideos.getSelectedRow()))));
+    }//GEN-LAST:event_jTableListaVideosMouseClicked
+
     //Metodo para verificar si hay un usuario que haya iniciado sesion y hacer los cambios necesarios a la pagina
     private void checarSesion() {
         if (Usuario != null) {
@@ -620,7 +763,58 @@ private void playVideoFromGridFS(String filename) {
         }
     }
     
-    
+    //Metodo para sobreescribir los ajustes que netbeans asigna automaticamente a tablas
+    private void alistarTabla(){
+        jTableListaVideos.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                    "", ""
+                }
+        ) {
+            Class[] types = new Class[]{
+                javax.swing.ImageIcon.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean[]{
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        jTableListaVideos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+
+        jTableListaVideos.setAutoscrolls(false);
+
+        jTableListaVideos.setColumnSelectionAllowed(true);
+
+        jTableListaVideos.setEditingColumn(0);
+
+        jTableListaVideos.setEditingRow(0);
+
+        jTableListaVideos.setMaximumSize(new java.awt.Dimension(290, 582));
+
+        jTableListaVideos.setMinimumSize(new java.awt.Dimension(290, 582));
+
+        jTableListaVideos.setRowHeight(63);
+
+        jTableListaVideos.setShowHorizontalLines(true);
+
+        jTableListaVideos.getTableHeader().setReorderingAllowed(false);
+
+        jTableListaVideos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        if (jTableListaVideos.getColumnModel().getColumnCount() > 0) {
+            jTableListaVideos.getColumnModel().getColumn(0).setResizable(false);
+            jTableListaVideos.getColumnModel().getColumn(0).setPreferredWidth(112);
+            jTableListaVideos.getColumnModel().getColumn(1).setResizable(false);
+            jTableListaVideos.getColumnModel().getColumn(1).setPreferredWidth(168);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -695,6 +889,8 @@ private void playVideoFromGridFS(String filename) {
     private javax.swing.JLabel jLabel_Volumen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_ReproducirVideo;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTableListaVideos;
     private javax.swing.JTextField jTextField_BarraBusqueda;
     // End of variables declaration//GEN-END:variables
 }
