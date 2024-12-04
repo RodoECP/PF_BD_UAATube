@@ -109,7 +109,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             mediaPlayer = null; // No video loaded initially
         });
     }
-
+/*
     private void loadVideoList() {
         List<String> videoNames = new ArrayList<>();
         alistarTabla();
@@ -136,9 +136,33 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
         }
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(videoNames.toArray(new String[0]));
-        jComboBox_ListaVideos.setModel(model);
-
-        jComboBox_ListaVideos.addActionListener(this::onVideoSelected);
+    }   */
+    
+    private void loadVideoList() {
+        ListaVideos.clear();
+        alistarTabla();
+        try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
+            while (cursor.hasNext()) {
+                GridFSFile file = cursor.next();
+                String filename = file.getFilename();
+                // Filter files based on video extensions
+                if (filename.toLowerCase().endsWith(".mp4")
+                        || filename.toLowerCase().endsWith(".avi")
+                        || filename.toLowerCase().endsWith(".mkv")
+                        || filename.toLowerCase().endsWith(".mov")
+                        || filename.toLowerCase().endsWith(".wmv")) {
+                    if (filtrarVideos(file.getObjectId())){
+                        DefaultTableModel model = (DefaultTableModel) jTableListaVideos.getModel();
+                        ImageIcon icon = new ImageIcon(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
+                        Image img = icon.getImage().getScaledInstance(112, 63, java.awt.Image.SCALE_SMOOTH);
+                        ImageIcon newIcon = new ImageIcon(img);
+                        model.addRow(new Object[]{newIcon, obtenerTitulo(file.getObjectId())});
+                        ListaVideos.add(file.getObjectId());
+                        System.out.println(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
+                    }
+                }
+            }
+        }
     }
 
     private String obtenerTitulo(ObjectId fileID) {
@@ -149,6 +173,30 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         )).first();
         titulo = videoDoc.getString("title");
         return titulo;
+    }
+    
+    private boolean filtrarVideos(ObjectId fileID){
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        switch (jComboBoxFiltros.getSelectedItem().toString()){
+            case "Titulo":
+                if (videoDoc.getString("title").toLowerCase().contains(jTextField_BarraBusqueda.getText().toLowerCase())){
+                  return true;  
+                }
+                break;
+            case "Descripcion":
+                if (videoDoc.getString("description").toLowerCase().contains(jTextField_BarraBusqueda.getText().toLowerCase())){
+                  return true;  
+                }
+                break;
+            case "Canal":
+                if (videoDoc.getString("autor").toLowerCase().contains(jTextField_BarraBusqueda.getText().toLowerCase())){
+                  return true;  
+                }
+        }
+        return false;
     }
 
     private ObjectId obtenerMiniId(ObjectId fileID) {
@@ -169,13 +217,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         )).first();
         filename = videoDoc.getString("filename");
         return filename;
-    }
-
-    private void onVideoSelected(ActionEvent e) {
-        String selectedVideo = (String) jComboBox_ListaVideos.getSelectedItem();
-        if (selectedVideo != null) {
-            Platform.runLater(() -> playVideoFromGridFS(selectedVideo));
-        }
     }
 
     private void playVideoFromGridFS(String filename) {
@@ -356,7 +397,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel_OpcionCuenta2 = new javax.swing.JLabel();
         jLabel_Icono_UAATube = new javax.swing.JLabel();
         jPanel_ReproducirVideo = new javax.swing.JPanel();
-        jComboBox_ListaVideos = new javax.swing.JComboBox<>();
         jButton_PlayVideo = new javax.swing.JButton();
         jButton_StopVideo = new javax.swing.JButton();
         jButton_PauseVideo = new javax.swing.JButton();
@@ -368,13 +408,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableListaVideos = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
+        jComboBoxFiltros = new javax.swing.JComboBox<>();
+        jButtonBuscar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(29, 113, 150));
 
         jTextField_BarraBusqueda.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
-        jTextField_BarraBusqueda.setText("Barra de Busqueda");
         jTextField_BarraBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField_BarraBusquedaActionPerformed(evt);
@@ -430,8 +471,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGap(0, 580, Short.MAX_VALUE)
         );
 
-        jComboBox_ListaVideos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jButton_PlayVideo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/PlayIcon.png"))); // NOI18N
         jButton_PlayVideo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -483,7 +522,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel_Volumen.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
         jLabel_Volumen.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_Volumen.setText("jLabel1");
+        jLabel_Volumen.setText("Control de Volumen");
 
         jTableListaVideos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -532,6 +571,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             jTableListaVideos.getColumnModel().getColumn(1).setPreferredWidth(168);
         }
 
+        jComboBoxFiltros.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Titulo", "Canal", "Descripcion" }));
+
+        jButtonBuscar.setText("Buscar");
+        jButtonBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBuscarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -543,10 +591,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel_Icono_UAATube)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 182, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                                .addComponent(jComboBoxFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
                                 .addComponent(jTextField_BarraBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 553, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(48, 48, 48)
-                                .addComponent(btnSubirVideo))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonBuscar)
+                                .addGap(115, 115, 115))
                             .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -559,35 +610,30 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(217, 217, 217)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel_Volumen)
-                                .addGap(51, 51, 51)))
-                        .addGap(43, 43, 43)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(252, 252, 252)
+                        .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(133, 133, 133))
+                        .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(24, 24, 24)
-                        .addComponent(jLabel1)
-                        .addGap(56, 56, 56))
+                        .addComponent(jLabel1))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
+                        .addComponent(btnSubirVideo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel_OpcionCuenta1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel_Diagonal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_OpcionCuenta2)
-                        .addContainerGap())))
+                        .addComponent(jLabel_OpcionCuenta2)))
+                .addGap(56, 56, 56))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel_Volumen)
+                .addGap(439, 439, 439))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -603,39 +649,35 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                             .addComponent(jLabel_OpcionCuenta1)
                             .addComponent(jLabel_Diagonal)
                             .addComponent(jLabel_OpcionCuenta2)
-                            .addComponent(btnSubirVideo))))
+                            .addComponent(btnSubirVideo)
+                            .addComponent(jComboBoxFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButtonBuscar))))
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel_ReproducirVideo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_Volumen)
+                .addGap(1, 1, 1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton_RewindVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButton_PauseVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButton_PlayVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton_StopVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton_FastForwardVideo, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel_Volumen)
-                                .addGap(1, 1, 1)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(9, 9, 9)))
-                        .addGap(91, 91, 91))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jComboBox_ListaVideos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(73, 73, 73))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton_VolumeUp, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_VolumeDownIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(9, 9, 9)))
+                .addGap(91, 91, 91))
         );
 
         javax.swing.GroupLayout PanelPrincipalLayout = new javax.swing.GroupLayout(PanelPrincipal);
@@ -758,6 +800,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         Platform.runLater(() -> playVideoFromGridFS(obtenerFilename(ListaVideos.get(jTableListaVideos.getSelectedRow()))));
     }//GEN-LAST:event_jTableListaVideosMouseClicked
 
+    private void jButtonBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarActionPerformed
+        loadVideoList();
+    }//GEN-LAST:event_jButtonBuscarActionPerformed
+
     //Metodo para verificar si hay un usuario que haya iniciado sesion y hacer los cambios necesarios a la pagina
     private void checarSesion() {
         if (Usuario != null) {
@@ -877,6 +923,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JButton btnSubirVideo;
+    private javax.swing.JButton jButtonBuscar;
     private javax.swing.JButton jButton_FastForwardVideo;
     private javax.swing.JButton jButton_PauseVideo;
     private javax.swing.JButton jButton_PlayVideo;
@@ -884,7 +931,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButton_StopVideo;
     private javax.swing.JButton jButton_VolumeDownIcon;
     private javax.swing.JButton jButton_VolumeUp;
-    private javax.swing.JComboBox<String> jComboBox_ListaVideos;
+    private javax.swing.JComboBox<String> jComboBoxFiltros;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Diagonal;
     private javax.swing.JLabel jLabel_Icono_UAATube;

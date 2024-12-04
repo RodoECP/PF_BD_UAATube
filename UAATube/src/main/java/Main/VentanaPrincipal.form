@@ -65,10 +65,13 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel_Icono_UAATube" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="182" max="32767" attributes="0"/>
+                                      <EmptySpace pref="15" max="32767" attributes="0"/>
+                                      <Component id="jComboBoxFiltros" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="jTextField_BarraBusqueda" min="-2" pref="553" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                                      <Component id="btnSubirVideo" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jButtonBuscar" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="115" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="jPanel_ReproducirVideo" max="32767" attributes="0"/>
                               </Group>
@@ -84,44 +87,36 @@
                               <Component id="jButton_StopVideo" min="-2" pref="63" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton_FastForwardVideo" min="-2" pref="64" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="217" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jButton_VolumeDownIcon" min="-2" pref="64" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButton_VolumeUp" min="-2" pref="64" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="jLabel_Volumen" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
+                              <EmptySpace min="-2" pref="252" max="-2" attributes="0"/>
+                              <Component id="jButton_VolumeDownIcon" min="-2" pref="64" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton_VolumeUp" min="-2" pref="64" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jComboBox_ListaVideos" min="-2" pref="137" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="133" max="-2" attributes="0"/>
-                          </Group>
                           <Group type="102" attributes="0">
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jScrollPane1" min="-2" pref="290" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
+                              <Component id="btnSubirVideo" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel_OpcionCuenta1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel_Diagonal" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel_OpcionCuenta2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace min="-2" pref="56" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jLabel_Volumen" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="439" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -141,18 +136,18 @@
                                   <Component id="jLabel_Diagonal" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel_OpcionCuenta2" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnSubirVideo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jComboBoxFiltros" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButtonBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="jPanel_ReproducirVideo" max="32767" attributes="0"/>
                                   <Component id="jScrollPane1" max="32767" attributes="0"/>
@@ -160,33 +155,26 @@
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                                      <Component id="jButton_RewindVideo" min="-2" pref="65" max="-2" attributes="0"/>
-                                      <Component id="jButton_PauseVideo" alignment="0" min="-2" pref="65" max="-2" attributes="0"/>
-                                      <Component id="jButton_PlayVideo" min="-2" pref="65" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="jButton_StopVideo" min="-2" pref="66" max="-2" attributes="0"/>
-                                  <Component id="jButton_FastForwardVideo" min="-2" pref="65" max="-2" attributes="0"/>
-                                  <Group type="102" attributes="0">
-                                      <Component id="jLabel_Volumen" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jButton_VolumeUp" alignment="0" min="-2" pref="65" max="-2" attributes="0"/>
-                                          <Component id="jButton_VolumeDownIcon" min="-2" pref="65" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                                  </Group>
-                              </Group>
-                              <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel_Volumen" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
+                              <Component id="jButton_RewindVideo" min="-2" pref="65" max="-2" attributes="0"/>
+                              <Component id="jButton_PauseVideo" alignment="0" min="-2" pref="65" max="-2" attributes="0"/>
+                              <Component id="jButton_PlayVideo" min="-2" pref="65" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="1" attributes="0">
-                              <Component id="jComboBox_ListaVideos" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
+                          <Component id="jButton_StopVideo" min="-2" pref="66" max="-2" attributes="0"/>
+                          <Component id="jButton_FastForwardVideo" min="-2" pref="65" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jButton_VolumeUp" alignment="0" min="-2" pref="65" max="-2" attributes="0"/>
+                                  <Component id="jButton_VolumeDownIcon" min="-2" pref="65" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -197,7 +185,6 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Century Gothic" size="12" style="0"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Barra de Busqueda"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField_BarraBusquedaActionPerformed"/>
@@ -294,21 +281,6 @@
                 </DimensionLayout>
               </Layout>
             </Container>
-            <Component class="javax.swing.JComboBox" name="jComboBox_ListaVideos">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
-            </Component>
             <Component class="javax.swing.JButton" name="jButton_PlayVideo">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -387,7 +359,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="jLabel1"/>
+                <Property name="text" type="java.lang.String" value="Control de Volumen"/>
               </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -443,6 +415,28 @@
               </SubComponents>
             </Container>
             <Component class="javax.swing.JLabel" name="jLabel1">
+            </Component>
+            <Component class="javax.swing.JComboBox" name="jComboBoxFiltros">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="3">
+                    <StringItem index="0" value="Titulo"/>
+                    <StringItem index="1" value="Canal"/>
+                    <StringItem index="2" value="Descripcion"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+              </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButtonBuscar">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Buscar"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonBuscarActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
