@@ -4,6 +4,7 @@
  */
 package Main;
 
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 /**
@@ -14,13 +15,18 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
 
     private static Document Usuario;
     private static String PaginaOrigen;
+    
+    //Variable para almacenar la conexion a la base de datos
+    private static MongoDatabase database = null;
+    
     /**
      * Creates new form Ventana_AdmCuenta
      */
-    public Ventana_AdmCuenta(Document Usuario, String PaginaOrigen) {
+    public Ventana_AdmCuenta(Document Usuario, String PaginaOrigen, MongoDatabase database) {
         initComponents();
         this.Usuario = Usuario;
         this.PaginaOrigen = PaginaOrigen;
+        this.database = database;
     }
 
     /**
@@ -266,7 +272,7 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana_AdmCuenta(Usuario, PaginaOrigen).setVisible(true);
+                new Ventana_AdmCuenta(Usuario, PaginaOrigen, database).setVisible(true);
             }
         });
     }

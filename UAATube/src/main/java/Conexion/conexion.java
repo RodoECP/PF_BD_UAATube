@@ -1,25 +1,34 @@
 package Conexion;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 
 /**
  *
  * @author pedro
  */
 public class conexion {
-        public MongoDatabase crearConexion(String databaseName) {
+    //Metodo para realizar la conexion a la base de datos
+    public static MongoDatabase crearConexion(String databaseName) {
         MongoDatabase database = null;
         try {
-            String uri = "mongodb://localhost:27017"; // Update if needed
-            MongoClient mongoClient = new MongoClient(new MongoClientURI(uri));
+            String connectionString = "mongodb+srv://EquipoBD:RPD@cluster0.qrldq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(connectionString))
+                    .build();
+            // Create a new client and connect to the server
+            com.mongodb.client.MongoClient mongoClient = MongoClients.create(settings);
             database = mongoClient.getDatabase(databaseName);
-
-            System.out.println("Conexión exitosa a MongoDB. Base de datos: " + databaseName);
-        } catch (MongoException e) {
-            System.err.println("Error al conectar con MongoDB: " + e.getMessage());
+            database.runCommand(new Document("ping", 1));
+            System.out.println("Conexion a base de datos realizada!" + database);
+            return database;
+        } catch (MongoException e){
+            System.out.println("Error al conectarse con la base de datos: " + e);
         }
         return database;
     }

@@ -1,5 +1,6 @@
 package Main;
 
+import Conexion.conexion;
 import javax.swing.JTextField;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -33,11 +34,12 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
      * de registro de usuario, configura los componentes de la interfaz gráfica
      * y ajusta los comportamientos iniciales de los campos de texto.
      */
-    public Ventana_RegistrarUsuario(String PaginaOrigen) {
+    public Ventana_RegistrarUsuario(String PaginaOrigen, MongoDatabase database) {
         initComponents();       // Inicializa los componentes de la interfaz gráfica.
         initializeFields();     // Configura los valores iniciales de los campos de texto.
         removeInitialFocus();   // Ajusta el enfoque para evitar que un campo esté enfocado inicialmente.
         this.PaginaOrigen = PaginaOrigen;
+        this.database = database;
     }
 
 //Variables para almacenar los datos que ingrese el usuario
@@ -49,6 +51,9 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
 
 //Variable para almacenar la pagina de donde se abrió esta
     private static String PaginaOrigen;
+    
+    //Variable para almacenar la conexion a la base de datos
+    private static MongoDatabase database;
     
     
     /**
@@ -449,7 +454,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         String fechaRegistro = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         // Conexión a MongoDB
-        MongoDatabase database = crearConexion("UAATube");
         if (database != null) {
             MongoCollection<Document> usuariosCollection = database.getCollection("Usuarios");
 
@@ -482,7 +486,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                 try {
                     usuariosCollection.insertOne(newUser);
                     JOptionPane.showMessageDialog(this, "Usuario registrado con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    Ventana_IniciarSesion form = new Ventana_IniciarSesion(PaginaOrigen);
+                    Ventana_IniciarSesion form = new Ventana_IniciarSesion(PaginaOrigen, database);
                     form.setVisible(true);
                     dispose();
                 } catch (MongoException e) {
@@ -598,7 +602,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
 
     private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
         if (PaginaOrigen == "PaginaPrincipal"){
-            VentanaPrincipal form = new VentanaPrincipal(null);
+            VentanaPrincipal form = new VentanaPrincipal(null, database);
             form.setVisible(true);
             this.dispose();
         } else {
@@ -607,24 +611,11 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_CancelarActionPerformed
 
     private void jButton_IniciaSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciaSesionActionPerformed
-        Ventana_IniciarSesion form = new Ventana_IniciarSesion(PaginaOrigen);
+        Ventana_IniciarSesion form = new Ventana_IniciarSesion(PaginaOrigen, database);
         form.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton_IniciaSesionActionPerformed
 
-    public MongoDatabase crearConexion(String databaseName) {
-        MongoDatabase database = null;
-        try {
-            String uri = "mongodb://localhost:27017"; // Update if needed
-            MongoClient mongoClient = new MongoClient(new MongoClientURI(uri));
-            database = mongoClient.getDatabase(databaseName);
-
-            System.out.println("Conexión exitosa a MongoDB. Base de datos: " + databaseName);
-        } catch (MongoException e) {
-            System.err.println("Error al conectar con MongoDB: " + e.getMessage());
-        }
-        return database;
-    }
 
     private void removeInitialFocus() {
         // Request focus on a non-input component, such as the main panel
@@ -730,7 +721,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana_RegistrarUsuario(PaginaOrigen).setVisible(true);
+                new Ventana_RegistrarUsuario(PaginaOrigen, database).setVisible(true);
             }
         });
     }

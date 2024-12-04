@@ -47,14 +47,19 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
     
     //Variable para almacenar la pagina de donde se abrio esta
     private static String PaginaOrigen;
+    
+    //Variable para guardar la conexion a la base de datos;
+    private static MongoDatabase database;
+    
     /**
      * Creates new form Ventana_SubirVideo
      */
-    public Ventana_SubirVideo(Document Usuario, String PaginaOrigen) {
+    public Ventana_SubirVideo(Document Usuario, String PaginaOrigen, MongoDatabase database) {
         initComponents();
         initComponents2();
         this.Usuario = Usuario;
         this.PaginaOrigen = PaginaOrigen;
+        this.database = database;
     }
 
     /**
@@ -513,7 +518,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         if(verificarCampos()){
             subirVideo();
             JOptionPane.showConfirmDialog(this,"El video se ha subido", "Confirmacion",JOptionPane.PLAIN_MESSAGE);
-            VentanaPrincipal form = new VentanaPrincipal(Usuario);
+            VentanaPrincipal form = new VentanaPrincipal(Usuario, database);
             form.setVisible(true);
             this.dispose();
         } else {
@@ -527,7 +532,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         if (PaginaOrigen == "PaginaPrincipal"){
-            VentanaPrincipal form = new VentanaPrincipal(Usuario);
+            VentanaPrincipal form = new VentanaPrincipal(Usuario, database);
             form.setVisible(true);
             this.dispose();
         } else {
@@ -587,8 +592,6 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
     
     private void subirVideo(){
         try {
-            conexion conexionInstance = new conexion();
-            MongoDatabase database = conexionInstance.crearConexion("UAATube");
             GridFSBucket gridFSBucket = GridFSBuckets.create(database);
             try (InputStream videoStream = new FileInputStream(videoCargado);
                     InputStream miniStream = new FileInputStream(miniCargado)) {
@@ -689,7 +692,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana_SubirVideo(Usuario, PaginaOrigen).setVisible(true);
+                new Ventana_SubirVideo(Usuario, PaginaOrigen, database).setVisible(true);
             }
         });
     }

@@ -26,19 +26,23 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
      * componentes gráficos de la ventana de inicio de sesión y configura los
      * listeners necesarios para los campos de texto.
      */
-    public Ventana_IniciarSesion(String PaginaOrigen) {
+    public Ventana_IniciarSesion(String PaginaOrigen, MongoDatabase database) {
         // Inicializa los componentes de la ventana.
         initComponents();
         // Configura los listeners para los campos de texto y contraseña con placeholders dinámicos.
         setupFieldFocusListeners();
         this.PaginaOrigen = PaginaOrigen;
         Usuario = null;
+        this.database = database;
     }
     //Variable para almacenar la pagina de donde se inició esta
     private static String PaginaOrigen;
     
     //Variable para almacenar el documento del usuario que haya iniciado sesion
     private static Document Usuario;
+    
+    //Variable para almacenar la conexino a la base de datos
+    private static MongoDatabase database= null;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -224,32 +228,23 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        try {
+            MongoCollection<Document> usuarios = database.getCollection("Usuarios");
+            Document usuarioDoc = usuarios.find(Filters.and(
+                    Filters.eq("nombre_usuario", usuario),
+                    Filters.eq("contraseña", contraseña)
+            )).first();
+            System.out.println(usuarioDoc);
+            if (usuarioDoc != null) {
+                JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                Usuario = usuarioDoc;
+                cerrarVentana();
 
-        // Intenta conectar a MongoDB para validar las credenciales.
-        conexion conexionInstance = new conexion();
-        MongoDatabase database = conexionInstance.crearConexion("UAATube");
-
-        if (database != null) {
-            try {
-                MongoCollection<Document> usuarios = database.getCollection("Usuarios");
-                Document usuarioDoc = usuarios.find(Filters.and(
-                        Filters.eq("nombre_usuario", usuario),
-                        Filters.eq("contraseña", contraseña)
-                )).first();
-                System.out.println(usuarioDoc);
-                if (usuarioDoc != null) {
-                    JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    Usuario = usuarioDoc;
-                    cerrarVentana();
-                    
-                } else {
-                    JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (MongoException e) {
-                JOptionPane.showMessageDialog(this, "Error al consultar la base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (MongoException e) {
+            JOptionPane.showMessageDialog(this, "Error al consultar la base de datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton_InicioSesionActionPerformed
 
@@ -268,7 +263,7 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_CancelarActionPerformed
 
     private void jButton_RegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RegistrarActionPerformed
-        Ventana_RegistrarUsuario form = new Ventana_RegistrarUsuario(PaginaOrigen);
+        Ventana_RegistrarUsuario form = new Ventana_RegistrarUsuario(PaginaOrigen, database);
         form.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton_RegistrarActionPerformed
@@ -371,7 +366,7 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
     
     private void cerrarVentana(){
         if (PaginaOrigen == "PaginaPrincipal"){
-            VentanaPrincipal form = new VentanaPrincipal(Usuario);
+            VentanaPrincipal form = new VentanaPrincipal(Usuario, database);
             form.setVisible(true);
             dispose();
         } else {
@@ -409,7 +404,7 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ventana_IniciarSesion(PaginaOrigen).setVisible(true);
+                new Ventana_IniciarSesion(PaginaOrigen, database).setVisible(true);
             }
         });
     }
@@ -428,10 +423,6 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void clearLoginFields() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    private MongoDatabase crearConexion(String uaaTube) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

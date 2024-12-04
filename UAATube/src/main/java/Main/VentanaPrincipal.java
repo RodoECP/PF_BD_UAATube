@@ -1,6 +1,10 @@
 package Main;
 
+import Conexion.conexion;
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
@@ -36,24 +40,37 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private JPanel controlsPanel;
     private JButton playButton, pauseButton, stopButton, rewindButton, fastForwardButton;
     private static Document Usuario;
+    private static MongoDatabase database;
 
-    public VentanaPrincipal(Document Usuario) {
-          connectToMongoDB();
+    //Constructor que se utilizara solo para el inicio de la aplicacion
+    public VentanaPrincipal() {
+        connectToMongoDB();
         initComponents();
+        initializeVideoPlayback();
+        loadVideoList();
+        addMediaControls();
+        checarSesion();
+        System.out.println(database);
+    }
+    
+    
+    public VentanaPrincipal (Document Usuario, MongoDatabase database){
+        initComponents();
+        this.database = database;
+        gridFSBucket = GridFSBuckets.create(database);
         initializeVideoPlayback();
         loadVideoList();
         addMediaControls();
         this.Usuario = Usuario;
         checarSesion();
-        System.out.println(Usuario);
+        System.out.println(this.database);
     }
 
     private void connectToMongoDB() {
-        MongoClient mongoClient = new MongoClient("localhost", 27017);
-        MongoDatabase database = mongoClient.getDatabase("UAATube");
+        database = conexion.crearConexion("UAATube");
         gridFSBucket = GridFSBuckets.create(database);
     }
-
+    
 private void initializeVideoPlayback() {
         jfxPanel = new JFXPanel();
         jPanel_ReproducirVideo.setLayout(new BorderLayout());
@@ -511,29 +528,29 @@ private void playVideoFromGridFS(String filename) {
 
     private void jLabel_OpcionCuenta1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_OpcionCuenta1MouseClicked
         if (Usuario != null) {
-            Ventana_AdmCuenta form = new Ventana_AdmCuenta(Usuario, "PaginaPrincipal");
+            Ventana_AdmCuenta form = new Ventana_AdmCuenta(Usuario, "PaginaPrincipal", database);
             form.setVisible(true);
             dispose();
         } else {
-            Ventana_IniciarSesion form = new Ventana_IniciarSesion("PaginaPrincipal");
+            Ventana_IniciarSesion form = new Ventana_IniciarSesion("PaginaPrincipal", database);
             form.setVisible(true);
             dispose();
         }
     }//GEN-LAST:event_jLabel_OpcionCuenta1MouseClicked
 
     private void btnSubirVideoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubirVideoActionPerformed
-        Ventana_SubirVideo form = new Ventana_SubirVideo(Usuario, "PaginaPrincipal");
+        Ventana_SubirVideo form = new Ventana_SubirVideo(Usuario, "PaginaPrincipal",database);
         form.setVisible(true);
         dispose(); // Cierra la ventana actual (opcional)
     }//GEN-LAST:event_btnSubirVideoActionPerformed
 
     private void jLabel_OpcionCuenta2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_OpcionCuenta2MouseClicked
         if (Usuario != null) {
-            VentanaPrincipal form = new VentanaPrincipal(null);
+            VentanaPrincipal form = new VentanaPrincipal(null, database);
             form.setVisible(true);
             dispose();
         } else {
-            Ventana_RegistrarUsuario form = new Ventana_RegistrarUsuario("PaginaPrincipal");
+            Ventana_RegistrarUsuario form = new Ventana_RegistrarUsuario("PaginaPrincipal", database);
             form.setVisible(true);
             dispose();
         }
@@ -602,6 +619,8 @@ private void playVideoFromGridFS(String filename) {
             jLabel_OpcionCuenta2.setText("Cerrar Sesion");
         }
     }
+    
+    
 
     /**
      * @param args the command line arguments
@@ -651,7 +670,7 @@ private void playVideoFromGridFS(String filename) {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new VentanaPrincipal(Usuario).setVisible(true);
+                new VentanaPrincipal().setVisible(true);
             }
         });
         
