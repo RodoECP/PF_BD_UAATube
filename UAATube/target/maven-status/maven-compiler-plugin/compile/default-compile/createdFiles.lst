@@ -4,6 +4,7 @@ Main\Ventana_AdmCuenta$4.class
 Main\VentanaPrincipal$9.class
 Main\Ventana_RegistrarUsuario$15.class
 Main\Ventana_SubirVideo$6.class
+Main\Ventana_Comentarios$3.class
 Main\VentanaPrincipal$15.class
 Main\VentanaPrincipal$11.class
 Main\Ventana_AdmCuenta$1.class
@@ -43,6 +44,7 @@ Main\Ventana_SubirVideo$1.class
 Main\VentanaPrincipal$4.class
 Main\Ventana_IniciarSesion$8.class
 Main\Ventana_AdmCuenta$6.class
+Main\Ventana_Comentarios$2.class
 Conexion\conexion.class
 Main\Ventana_RegistrarUsuario.class
 Main\VentanaPrincipal$1.class

@@ -1,11 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Main;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -16,14 +16,42 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
     private static Document Usuario;
     private static MongoDatabase database;
     private static Document video;
+
     /**
      * Creates new form Ventana_Comentarios
      */
-    public Ventana_Comentarios(Document Usuario,Document video, MongoDatabase database) {
+    public Ventana_Comentarios(Document Usuario, Document video, MongoDatabase database) {
         initComponents();
         this.Usuario = Usuario;
         this.database = database;
         this.video = video;
+        loadComments();
+    }
+
+    private void loadComments() {
+        if (video == null || !video.containsKey("videoId")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "El video no está definido.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        MongoCollection<Document> comentariosCollection = database.getCollection("Comentarios");
+        DefaultTableModel model = (DefaultTableModel) jTable_Comentarios.getModel();
+        model.setRowCount(0); // Clear existing rows in the JTable
+
+        // Retrieve videoId as ObjectId and use it in the query
+        ObjectId videoId = video.getObjectId("videoId");
+        MongoCursor<Document> cursor = comentariosCollection.find(new Document("videoId", videoId)).iterator();
+
+        try {
+            while (cursor.hasNext()) {
+                Document comentario = cursor.next();
+                String user = comentario.getString("usuario");
+                String comment = comentario.getString("comentario");
+                model.addRow(new Object[]{user, comment}); // Add rows to the JTable
+            }
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -35,21 +63,140 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel_Comentarios = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable_Comentarios = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea_Comentarios = new javax.swing.JTextArea();
+        jLabel_Comentario_Nuevo = new javax.swing.JLabel();
+        jButton_Subir_Comentario = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel_Comentarios.setBackground(new java.awt.Color(29, 113, 150));
+
+        jTable_Comentarios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, true, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTable_Comentarios);
+        if (jTable_Comentarios.getColumnModel().getColumnCount() > 0) {
+            jTable_Comentarios.getColumnModel().getColumn(2).setResizable(false);
+            jTable_Comentarios.getColumnModel().getColumn(3).setResizable(false);
+        }
+
+        jTextArea_Comentarios.setColumns(20);
+        jTextArea_Comentarios.setRows(5);
+        jScrollPane2.setViewportView(jTextArea_Comentarios);
+
+        jLabel_Comentario_Nuevo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel_Comentario_Nuevo.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Comentario_Nuevo.setText("Comentario Nuevo:");
+
+        jButton_Subir_Comentario.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
+        jButton_Subir_Comentario.setText("Subir");
+        jButton_Subir_Comentario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Subir_ComentarioActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel_ComentariosLayout = new javax.swing.GroupLayout(jPanel_Comentarios);
+        jPanel_Comentarios.setLayout(jPanel_ComentariosLayout);
+        jPanel_ComentariosLayout.setHorizontalGroup(
+            jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addGroup(jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel_Comentario_Nuevo)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(39, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_ComentariosLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton_Subir_Comentario, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(207, 207, 207))))
+        );
+        jPanel_ComentariosLayout.setVerticalGroup(
+            jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel_Comentario_Nuevo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton_Subir_Comentario, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(jPanel_Comentarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(jPanel_Comentarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton_Subir_ComentarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Subir_ComentarioActionPerformed
+        // TODO add your handling code here:
+        if (video == null || !video.containsKey("videoId")) {
+            javax.swing.JOptionPane.showMessageDialog(this, "El video no está definido.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String commentText = jTextArea_Comentarios.getText().trim();
+        if (commentText.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "El comentario no puede estar vacío.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Retrieve the current user's name from Usuario
+        String userName = (Usuario != null && Usuario.containsKey("nombre_usuario"))
+                ? Usuario.getString("nombre_usuario")
+                : "Anonimo"; // Use "Anonimo" if no user is logged in
+
+        MongoCollection<Document> comentariosCollection = database.getCollection("Comentarios");
+        Document newComment = new Document()
+                .append("usuario", userName) // Add the current user's name
+                .append("videoId", video.getObjectId("videoId")) // Relate comment to the video
+                .append("videoTitle", video.getString("title")) // Optional: Include video metadata
+                .append("comentario", commentText);
+
+        comentariosCollection.insertOne(newComment);
+        javax.swing.JOptionPane.showMessageDialog(this, "Comentario subido correctamente.", "Éxito", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        jTextArea_Comentarios.setText(""); // Clear the input field
+        loadComments(); // Refresh the JTable
+    }//GEN-LAST:event_jButton_Subir_ComentarioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -87,5 +234,12 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_Subir_Comentario;
+    private javax.swing.JLabel jLabel_Comentario_Nuevo;
+    private javax.swing.JPanel jPanel_Comentarios;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTable_Comentarios;
+    private javax.swing.JTextArea jTextArea_Comentarios;
     // End of variables declaration//GEN-END:variables
 }
