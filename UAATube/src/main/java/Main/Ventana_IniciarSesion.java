@@ -16,23 +16,37 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- *
- * @author pedro
+ * Ventana de inicio de sesión que permite al usuario autenticarse en la
+ * aplicación. Esta clase maneja la interfaz gráfica y la lógica para iniciar
+ * sesión en el sistema.
  */
 public class Ventana_IniciarSesion extends javax.swing.JFrame {
 
     /**
-     * Constructor de la clase Ventana_IniciarSesion. Este método inicializa los
-     * componentes gráficos de la ventana de inicio de sesión y configura los
-     * listeners necesarios para los campos de texto.
+     * Constructor de la clase `Ventana_IniciarSesion`. Este método inicializa
+     * los componentes gráficos de la ventana de inicio de sesión y configura
+     * los listeners necesarios para los campos de texto y contraseñas con
+     * placeholders dinámicos.
+     *
+     * @param PaginaOrigen La página de donde se originó la navegación hacia la
+     * ventana de inicio de sesión.
+     * @param database La conexión a la base de datos (MongoDB) que se utilizará
+     * para autenticar al usuario.
      */
     public Ventana_IniciarSesion(String PaginaOrigen, MongoDatabase database) {
         // Inicializa los componentes de la ventana.
         initComponents();
+
         // Configura los listeners para los campos de texto y contraseña con placeholders dinámicos.
         setupFieldFocusListeners();
+
+        // Establece la página de origen (para redirigir después de iniciar sesión).
         this.PaginaOrigen = PaginaOrigen;
+
+        // Establece el valor inicial del usuario a null (no hay usuario autenticado aún).
         Usuario = null;
+
+        // Establece la conexión a la base de datos.
         this.database = database;
     }
     //Variable para almacenar la pagina de donde se inició esta
@@ -54,23 +68,20 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel_Inicio_Sesion_UAATube = new javax.swing.JLabel();
         jTextField_Usuario_InicioSesion = new javax.swing.JTextField();
         jButton_InicioSesion = new javax.swing.JButton();
         jLabel_Contraseña_Usuario = new javax.swing.JLabel();
         jPasswordField_Contraseña = new javax.swing.JPasswordField();
-        jLabel_Icono_UAATube = new javax.swing.JLabel();
         jButton_Cancelar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jButton_Registrar = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel_Icono_UAATube = new javax.swing.JLabel();
+        jLabel_Inicio_Sesion_UAATube = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(29, 113, 150));
-
-        jLabel_Inicio_Sesion_UAATube.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel_Inicio_Sesion_UAATube.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_Inicio_Sesion_UAATube.setText("Inicio de Sesión UAA Tube");
+        jPanel1.setBackground(new java.awt.Color(38, 38, 38));
 
         jTextField_Usuario_InicioSesion.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jTextField_Usuario_InicioSesion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -81,7 +92,9 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
             }
         });
 
+        jButton_InicioSesion.setBackground(new java.awt.Color(22, 62, 100));
         jButton_InicioSesion.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jButton_InicioSesion.setForeground(new java.awt.Color(255, 255, 255));
         jButton_InicioSesion.setText("Iniciar Sesión");
         jButton_InicioSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,9 +112,9 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
             }
         });
 
-        jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
-
+        jButton_Cancelar.setBackground(new java.awt.Color(22, 62, 100));
         jButton_Cancelar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jButton_Cancelar.setForeground(new java.awt.Color(255, 255, 255));
         jButton_Cancelar.setText("Cancelar");
         jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -109,9 +122,12 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("¿No tienes cuenta?");
 
+        jButton_Registrar.setBackground(new java.awt.Color(22, 62, 100));
         jButton_Registrar.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jButton_Registrar.setForeground(new java.awt.Color(255, 255, 255));
         jButton_Registrar.setText("Registrate Aquí");
         jButton_Registrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -119,16 +135,41 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBackground(new java.awt.Color(89, 89, 89));
+
+        jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
+
+        jLabel_Inicio_Sesion_UAATube.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel_Inicio_Sesion_UAATube.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Inicio_Sesion_UAATube.setText("Inicio de Sesión UAA Tube");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel_Icono_UAATube)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_Inicio_Sesion_UAATube)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(8, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_Icono_UAATube)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(jLabel_Inicio_Sesion_UAATube)))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel_Icono_UAATube)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_Inicio_Sesion_UAATube)
-                .addGap(224, 224, 224))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -152,23 +193,18 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
                                 .addComponent(jButton_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton_Cancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel_Icono_UAATube))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jLabel_Inicio_Sesion_UAATube)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField_Usuario_InicioSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel_Contraseña_Usuario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(11, 11, 11)
                 .addComponent(jPasswordField_Contraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -185,7 +221,9 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -418,6 +456,7 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_Inicio_Sesion_UAATube;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPasswordField jPasswordField_Contraseña;
     private javax.swing.JTextField jTextField_Usuario_InicioSesion;
     // End of variables declaration//GEN-END:variables

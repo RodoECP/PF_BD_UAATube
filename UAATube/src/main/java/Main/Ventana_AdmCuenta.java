@@ -1,13 +1,25 @@
 package Main;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.GridFSDownloadStream;
+import java.awt.Image;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 /**
  *
@@ -15,8 +27,11 @@ import org.bson.Document;
  */
 public class Ventana_AdmCuenta extends javax.swing.JFrame {
 
+    private GridFSBucket gridFSBucket;
     private static Document Usuario;
     private static String PaginaOrigen;
+    List<ObjectId> ListaVideos = new ArrayList<>();
+    private static ObjectId Video;
 
     //Variable para almacenar la conexion a la base de datos
     private static MongoDatabase database = null;
@@ -29,25 +44,33 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         this.Usuario = Usuario;
         this.PaginaOrigen = PaginaOrigen;
         this.database = database;
-
+        gridFSBucket = GridFSBuckets.create(this.database);
+        juntarCategoriasUsuario();
+        loadVideoList();
+        
       // Fill fields with current user data
         txtUsuario.setText(Usuario.getString("nombre_usuario"));
         txtCanal.setText(Usuario.getString("nombre_canal"));
         txtCorreo.setText(Usuario.getString("correo_electronico"));
         
+        jPasswordField_ContraseñaUsuario.setText(Usuario.getString("contraseña"));
+        jPasswordField_Confirmar_ContraseñaUsuario.setText(Usuario.getString("contraseña"));
+        
         // Populate checkboxes based on the user's current categories
-        List<String> categorias = Usuario.getList("categorias", String.class);
-        chkVideojuegos.setSelected(categorias.contains("Videojuegos"));
-        chkPeliculas.setSelected(categorias.contains("Peliculas"));
-        chkFamilia.setSelected(categorias.contains("Familia"));
-        chkMusica.setSelected(categorias.contains("Musica"));
-        chkTecnologia.setSelected(categorias.contains("Tecnologia"));
-        chkBelleza.setSelected(categorias.contains("Belleza"));
-        chkCocina.setSelected(categorias.contains("Cocina"));
-        chkVlog.setSelected(categorias.contains("Vlog"));
+        List<String> categoriasUsuario = Usuario.getList("categorias", String.class);
+        chkVideojuegos.setSelected(categoriasUsuario.contains("Videojuegos"));
+        chkPeliculas.setSelected(categoriasUsuario.contains("Peliculas"));
+        chkComedia.setSelected(categoriasUsuario.contains("Familia"));
+        chkMusica.setSelected(categoriasUsuario.contains("Musica"));
+        chkTecnologia.setSelected(categoriasUsuario.contains("Tecnologia"));
+        chkBelleza.setSelected(categoriasUsuario.contains("Belleza"));
+        chkCocina.setSelected(categoriasUsuario.contains("Cocina"));
+        chkVlog.setSelected(categoriasUsuario.contains("Vlog"));
     }
+    
 
-    private List juntarCategorias() {
+
+    private List juntarCategoriasUsuario() {
         List<String> categorias = new ArrayList<>();
         if (chkVideojuegos.isSelected()) {
             categorias.add("Videojuegos");
@@ -55,7 +78,7 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         if (chkPeliculas.isSelected()) {
             categorias.add("Peliculas");
         }
-        if (chkFamilia.isSelected()) {
+        if (chkComedia.isSelected()) {
             categorias.add("Familia");
         }
         if (chkMusica.isSelected()) {
@@ -71,6 +94,35 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
             categorias.add("Cocina");
         }
         if (chkVlog.isSelected()) {
+            categorias.add("Vlog");
+        }
+        return categorias;
+    }
+    
+    private List juntarCategoriasVideo() {
+        List<String> categorias = new ArrayList<>();
+        if (chkVideojuegos1.isSelected()) {
+            categorias.add("Videojuegos");
+        }
+        if (chkPeliculas1.isSelected()) {
+            categorias.add("Peliculas");
+        }
+        if (chkComedia1.isSelected()) {
+            categorias.add("Familia");
+        }
+        if (chkMusica1.isSelected()) {
+            categorias.add("Musica");
+        }
+        if (chkTecnologia1.isSelected()) {
+            categorias.add("Tecnologia");
+        }
+        if (chkBelleza1.isSelected()) {
+            categorias.add("Belleza");
+        }
+        if (chkCocina1.isSelected()) {
+            categorias.add("Cocina");
+        }
+        if (chkVlog1.isSelected()) {
             categorias.add("Vlog");
         }
         return categorias;
@@ -97,13 +149,11 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         lblContra = new javax.swing.JLabel();
-        lblIcono = new javax.swing.JLabel();
         btnAplicarCambios = new javax.swing.JButton();
-        lblTitulo = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
         btnCancelar = new javax.swing.JButton();
         jPanelCategorias = new javax.swing.JPanel();
-        chkFamilia = new javax.swing.JCheckBox();
+        chkComedia = new javax.swing.JCheckBox();
         chkMusica = new javax.swing.JCheckBox();
         chkPeliculas = new javax.swing.JCheckBox();
         chkVideojuegos = new javax.swing.JCheckBox();
@@ -120,28 +170,46 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         lblConfirmaContra = new javax.swing.JLabel();
         jPasswordField_ContraseñaUsuario = new javax.swing.JPasswordField();
         jPasswordField_Confirmar_ContraseñaUsuario = new javax.swing.JPasswordField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableListaVideos = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jTextFieldTitulo = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextAreaDescripcion = new javax.swing.JTextArea();
+        jPanelCategorias1 = new javax.swing.JPanel();
+        chkComedia1 = new javax.swing.JCheckBox();
+        chkMusica1 = new javax.swing.JCheckBox();
+        chkPeliculas1 = new javax.swing.JCheckBox();
+        chkVideojuegos1 = new javax.swing.JCheckBox();
+        chkVlog1 = new javax.swing.JCheckBox();
+        chkTecnologia1 = new javax.swing.JCheckBox();
+        chkCocina1 = new javax.swing.JCheckBox();
+        chkBelleza1 = new javax.swing.JCheckBox();
+        lblCategorias1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        lblTitulo = new javax.swing.JLabel();
+        lblIcono = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel1.setBackground(new java.awt.Color(38, 38, 38));
 
         lblContra.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblContra.setForeground(new java.awt.Color(255, 255, 255));
         lblContra.setText("Contraseña");
 
-        lblIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
-
+        btnAplicarCambios.setBackground(new java.awt.Color(22, 62, 100));
         btnAplicarCambios.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnAplicarCambios.setForeground(new java.awt.Color(255, 255, 255));
         btnAplicarCambios.setText("Aplicar Cambios");
+        btnAplicarCambios.setEnabled(false);
         btnAplicarCambios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAplicarCambiosActionPerformed(evt);
             }
         });
-
-        lblTitulo.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
-        lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
-        lblTitulo.setText("Administrar Cuenta");
 
         txtUsuario.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         txtUsuario.setText("Usuario");
@@ -150,8 +218,15 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                 txtUsuarioActionPerformed(evt);
             }
         });
+        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtUsuarioKeyTyped(evt);
+            }
+        });
 
+        btnCancelar.setBackground(new java.awt.Color(22, 62, 100));
         btnCancelar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -159,14 +234,14 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
             }
         });
 
-        jPanelCategorias.setBackground(new java.awt.Color(29, 113, 150));
+        jPanelCategorias.setBackground(new java.awt.Color(33, 79, 154));
         jPanelCategorias.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanelCategorias.setForeground(new java.awt.Color(255, 255, 255));
         jPanelCategorias.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
 
-        chkFamilia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
-        chkFamilia.setForeground(new java.awt.Color(255, 255, 255));
-        chkFamilia.setText("Comedia");
+        chkComedia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkComedia.setForeground(new java.awt.Color(255, 255, 255));
+        chkComedia.setText("Comedia");
 
         chkMusica.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkMusica.setForeground(new java.awt.Color(255, 255, 255));
@@ -211,7 +286,7 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                     .addGroup(jPanelCategoriasLayout.createSequentialGroup()
                         .addGroup(jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chkMusica)
-                            .addComponent(chkFamilia)
+                            .addComponent(chkComedia)
                             .addComponent(chkPeliculas)
                             .addComponent(chkVideojuegos))
                         .addGap(39, 39, 39)
@@ -220,14 +295,14 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                             .addComponent(chkBelleza)
                             .addComponent(chkVlog)
                             .addComponent(chkTecnologia))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanelCategoriasLayout.setVerticalGroup(
             jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCategoriasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblCategorias)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanelCategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelCategoriasLayout.createSequentialGroup()
                         .addComponent(chkTecnologia)
@@ -242,7 +317,7 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkMusica)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chkFamilia)
+                        .addComponent(chkComedia)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chkPeliculas)))
                 .addContainerGap())
@@ -259,6 +334,11 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                 txtCanalActionPerformed(evt);
             }
         });
+        txtCanal.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCanalKeyTyped(evt);
+            }
+        });
 
         lblCanal.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCanal.setForeground(new java.awt.Color(255, 255, 255));
@@ -271,6 +351,11 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                 txtCorreoActionPerformed(evt);
             }
         });
+        txtCorreo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCorreoKeyTyped(evt);
+            }
+        });
 
         lblCorreo.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCorreo.setForeground(new java.awt.Color(255, 255, 255));
@@ -280,19 +365,227 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         lblConfirmaContra.setForeground(new java.awt.Color(255, 255, 255));
         lblConfirmaContra.setText("Confirma Contraseña");
 
-        jPasswordField_ContraseñaUsuario.setText("jPasswordField1");
+        jPasswordField_ContraseñaUsuario.setText("passworddefault");
         jPasswordField_ContraseñaUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField_ContraseñaUsuarioActionPerformed(evt);
             }
         });
+        jPasswordField_ContraseñaUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jPasswordField_ContraseñaUsuarioKeyTyped(evt);
+            }
+        });
 
-        jPasswordField_Confirmar_ContraseñaUsuario.setText("jPasswordField1");
+        jPasswordField_Confirmar_ContraseñaUsuario.setText("passworddefault");
+        jPasswordField_Confirmar_ContraseñaUsuario.setEnabled(false);
         jPasswordField_Confirmar_ContraseñaUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed(evt);
             }
         });
+
+        jTableListaVideos.setBackground(new java.awt.Color(33, 79, 154));
+        jTableListaVideos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jTableListaVideos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "", ""
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTableListaVideos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jTableListaVideos.setAutoscrolls(false);
+        jTableListaVideos.setColumnSelectionAllowed(true);
+        jTableListaVideos.setEditingColumn(0);
+        jTableListaVideos.setEditingRow(0);
+        jTableListaVideos.setMaximumSize(new java.awt.Dimension(290, 582));
+        jTableListaVideos.setMinimumSize(new java.awt.Dimension(290, 582));
+        jTableListaVideos.setRowHeight(63);
+        jTableListaVideos.setShowHorizontalLines(true);
+        jTableListaVideos.getTableHeader().setReorderingAllowed(false);
+        jTableListaVideos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableListaVideosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTableListaVideos);
+
+        jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("VIdeos de");
+
+        jTextFieldTitulo.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jTextFieldTitulo.setEnabled(false);
+        jTextFieldTitulo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextFieldTituloKeyTyped(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Titulo:");
+
+        jLabel3.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Descripcion:");
+
+        jTextAreaDescripcion.setColumns(20);
+        jTextAreaDescripcion.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jTextAreaDescripcion.setLineWrap(true);
+        jTextAreaDescripcion.setRows(5);
+        jTextAreaDescripcion.setWrapStyleWord(true);
+        jTextAreaDescripcion.setEnabled(false);
+        jTextAreaDescripcion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextAreaDescripcionKeyTyped(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTextAreaDescripcion);
+
+        jPanelCategorias1.setBackground(new java.awt.Color(33, 79, 154));
+        jPanelCategorias1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanelCategorias1.setForeground(new java.awt.Color(255, 255, 255));
+        jPanelCategorias1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+
+        chkComedia1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkComedia1.setForeground(new java.awt.Color(255, 255, 255));
+        chkComedia1.setText("Comedia");
+        chkComedia1.setEnabled(false);
+
+        chkMusica1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkMusica1.setForeground(new java.awt.Color(255, 255, 255));
+        chkMusica1.setText("Musica");
+        chkMusica1.setEnabled(false);
+
+        chkPeliculas1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkPeliculas1.setForeground(new java.awt.Color(255, 255, 255));
+        chkPeliculas1.setText("Peliculas");
+        chkPeliculas1.setEnabled(false);
+
+        chkVideojuegos1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVideojuegos1.setForeground(new java.awt.Color(255, 255, 255));
+        chkVideojuegos1.setText("Videojuegos");
+        chkVideojuegos1.setEnabled(false);
+
+        chkVlog1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVlog1.setForeground(new java.awt.Color(255, 255, 255));
+        chkVlog1.setText("Vlog");
+        chkVlog1.setEnabled(false);
+
+        chkTecnologia1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkTecnologia1.setForeground(new java.awt.Color(255, 255, 255));
+        chkTecnologia1.setText("Tecnología");
+        chkTecnologia1.setEnabled(false);
+
+        chkCocina1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkCocina1.setForeground(new java.awt.Color(255, 255, 255));
+        chkCocina1.setText("Cocina");
+        chkCocina1.setEnabled(false);
+
+        chkBelleza1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkBelleza1.setForeground(new java.awt.Color(255, 255, 255));
+        chkBelleza1.setText("Belleza");
+        chkBelleza1.setEnabled(false);
+
+        lblCategorias1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        lblCategorias1.setForeground(new java.awt.Color(255, 255, 255));
+        lblCategorias1.setText("Categorias");
+
+        javax.swing.GroupLayout jPanelCategorias1Layout = new javax.swing.GroupLayout(jPanelCategorias1);
+        jPanelCategorias1.setLayout(jPanelCategorias1Layout);
+        jPanelCategorias1Layout.setHorizontalGroup(
+            jPanelCategorias1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCategorias1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelCategorias1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblCategorias1)
+                    .addGroup(jPanelCategorias1Layout.createSequentialGroup()
+                        .addGroup(jPanelCategorias1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkMusica1)
+                            .addComponent(chkComedia1)
+                            .addComponent(chkPeliculas1)
+                            .addComponent(chkVideojuegos1))
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanelCategorias1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkCocina1)
+                            .addComponent(chkBelleza1)
+                            .addComponent(chkVlog1)
+                            .addComponent(chkTecnologia1))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelCategorias1Layout.setVerticalGroup(
+            jPanelCategorias1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCategorias1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblCategorias1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelCategorias1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelCategorias1Layout.createSequentialGroup()
+                        .addComponent(chkTecnologia1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkCocina1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkBelleza1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkVlog1))
+                    .addGroup(jPanelCategorias1Layout.createSequentialGroup()
+                        .addComponent(chkVideojuegos1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkMusica1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkComedia1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(chkPeliculas1)))
+                .addContainerGap())
+        );
+
+        jPanel2.setBackground(new java.awt.Color(89, 89, 89));
+        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
+
+        lblTitulo.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitulo.setText("Administrar Cuenta");
+
+        lblIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(lblIcono)
+                .addGap(18, 18, 18)
+                .addComponent(lblTitulo)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblIcono))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -302,68 +595,99 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanelCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(btnAplicarCambios)
-                            .addGap(163, 163, 163)
-                            .addComponent(btnCancelar))
-                        .addComponent(lblContra, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(lblConfirmaContra, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(lblContra)
+                    .addComponent(lblConfirmaContra)
                     .addComponent(txtUsuario)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lblIcono)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblTitulo))
                     .addComponent(lblUsuario)
                     .addComponent(txtCanal)
                     .addComponent(lblCanal)
                     .addComponent(lblCorreo)
                     .addComponent(txtCorreo)
-                    .addComponent(jPasswordField_ContraseñaUsuario)
+                    .addComponent(jPasswordField_ContraseñaUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
                     .addComponent(jPasswordField_Confirmar_ContraseñaUsuario))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAplicarCambios)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCancelar))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jScrollPane2)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanelCategorias1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 7, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblIcono))
-                .addGap(26, 26, 26)
-                .addComponent(lblUsuario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblCanal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtCanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblCorreo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(jPanelCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblContra)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField_ContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(lblConfirmaContra)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPasswordField_Confirmar_ContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAplicarCambios)
-                    .addComponent(btnCancelar))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblUsuario)
+                        .addGap(14, 14, 14)
+                        .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblCanal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblCorreo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(jPanelCategorias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblContra)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPasswordField_ContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(lblConfirmaContra)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPasswordField_Confirmar_ContraseñaUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanelCategorias1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnAplicarCambios, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -397,56 +721,277 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         String correoElectronico = txtCorreo.getText().trim();
         String contraseña = new String(jPasswordField_ContraseñaUsuario.getPassword());
         String confirmarContra = new String(jPasswordField_Confirmar_ContraseñaUsuario.getPassword());
-        List<String> categorias = juntarCategorias();
-
+        List<String> categoriasUsuario = juntarCategoriasUsuario();
+        List<String> categoriasVideo = juntarCategoriasVideo();
+        String titulo = jTextFieldTitulo.getText().trim();
+        String descripcion = jTextAreaDescripcion.getText().trim();
+        
         // Check if passwords match
         if (!contraseña.equals(confirmarContra)) {
             JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        int confirmation = JOptionPane.showConfirmDialog(this, "Desea aplicar los cambios hechos?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Update user in database
+            try {
+                MongoCollection<Document> collectionUsuarios = database.getCollection("Usuarios");
 
-        // Verify current password
-        if (!contraseña.equals(Usuario.getString("contraseña"))) {
-            JOptionPane.showMessageDialog(this, "La contraseña actual no coincide.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+                // Create the update document
+                collectionUsuarios.updateOne(
+                    Filters.eq("_id", Usuario.getObjectId("_id")),
+                    Updates.combine(
+                        Updates.set("nombre_usuario", nombreUsuario),
+                        Updates.set("nombre_canal", nombreCanal),
+                        Updates.set("correo_electronico", correoElectronico),
+                        Updates.set("categorias", categoriasUsuario),
+                        Updates.set("contraseña", contraseña)
+                    )
+                );
 
-        // Update user in database
-        try {
-            MongoCollection<Document> collection = database.getCollection("usuarios");
+                MongoCollection<Document> collectionVideos = database.getCollection("Videos");
+                collectionVideos.updateMany(
+                        Filters.eq("autor", Usuario.getString("nombre_canal")),
+                        Updates.set("autor", nombreCanal));
 
-            // Create the update document
-            collection.updateOne(
-                Filters.eq("_id", Usuario.getObjectId("_id")),
-                Updates.combine(
-                    Updates.set("nombre_usuario", nombreUsuario),
-                    Updates.set("nombre_canal", nombreCanal),
-                    Updates.set("correo_electronico", correoElectronico),
-                    Updates.set("categorias", categorias)
-                )
-            );
+                collectionVideos.updateOne(
+                        Filters.eq("videoId", Video),
+                        Updates.combine (
+                                Updates.set("title", titulo),
+                                Updates.set("description", descripcion),
+                                Updates.set("categorias",categoriasVideo)));
 
-            // Update local user data
-            Usuario.put("nombre_usuario", nombreUsuario);
-            Usuario.put("nombre_canal", nombreCanal);
-            Usuario.put("correo_electronico", correoElectronico);
-            Usuario.put("categorias", categorias);
+                // Update local user data
+                Usuario.put("nombre_usuario", nombreUsuario);
+                Usuario.put("nombre_canal", nombreCanal);
+                Usuario.put("correo_electronico", correoElectronico);
+                Usuario.put("categorias", categoriasUsuario);
 
-            JOptionPane.showMessageDialog(this, "Información actualizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            cerrarVentana();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al actualizar la información: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Información actualizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                cerrarVentana();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al actualizar la información: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btnAplicarCambiosActionPerformed
 
     private void jPasswordField_ContraseñaUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_ContraseñaUsuarioActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jPasswordField_ContraseñaUsuarioActionPerformed
 
     private void jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jPasswordField_Confirmar_ContraseñaUsuarioActionPerformed
 
+    private void jTableListaVideosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableListaVideosMouseClicked
+        Video = ListaVideos.get(jTableListaVideos.getSelectedRow());
+        cargarDatos(ListaVideos.get(jTableListaVideos.getSelectedRow()));
+        jTextFieldTitulo.setEnabled(true);
+        jTextAreaDescripcion.setEnabled(true);
+        jPanelCategorias1.setEnabled(true);
+        chkVideojuegos1.setEnabled(true);
+        chkPeliculas1.setEnabled(true);
+        chkMusica1.setEnabled(true);
+        chkBelleza1.setEnabled(true);
+        chkVlog1.setEnabled(true);
+        chkCocina1.setEnabled(true);
+        chkComedia1.setEnabled(true);
+        chkTecnologia1.setEnabled(true);
+    }//GEN-LAST:event_jTableListaVideosMouseClicked
+
+    private void jTextFieldTituloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldTituloKeyTyped
+        btnAplicarCambios.setEnabled(true);
+    }//GEN-LAST:event_jTextFieldTituloKeyTyped
+
+    private void jTextAreaDescripcionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextAreaDescripcionKeyTyped
+        btnAplicarCambios.setEnabled(true);
+    }//GEN-LAST:event_jTextAreaDescripcionKeyTyped
+
+    private void txtUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyTyped
+        btnAplicarCambios.setEnabled(true);
+    }//GEN-LAST:event_txtUsuarioKeyTyped
+
+    private void txtCanalKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCanalKeyTyped
+        btnAplicarCambios.setEnabled(true);
+    }//GEN-LAST:event_txtCanalKeyTyped
+
+    private void txtCorreoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCorreoKeyTyped
+        btnAplicarCambios.setEnabled(true);
+    }//GEN-LAST:event_txtCorreoKeyTyped
+
+    private void jPasswordField_ContraseñaUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPasswordField_ContraseñaUsuarioKeyTyped
+        btnAplicarCambios.setEnabled(true);
+        jPasswordField_Confirmar_ContraseñaUsuario.setEnabled(true);
+    }//GEN-LAST:event_jPasswordField_ContraseñaUsuarioKeyTyped
+
+    //Metodo para cargar los datos del video que fue seleccionado
+    private void cargarDatos(ObjectId fileID) {
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        jTextFieldTitulo.setText(videoDoc.getString("title"));
+        jTextAreaDescripcion.setText(videoDoc.getString("description"));
+        llenarChkVideo(videoDoc);
+    }
+
+    public void llenarChkVideo(Document video){
+        List<String> categoriasVideo = video.getList("categorias", String.class);
+        chkVideojuegos1.setSelected(categoriasVideo.contains("Videojuegos"));
+        chkPeliculas1.setSelected(categoriasVideo.contains("Peliculas"));
+        chkComedia1.setSelected(categoriasVideo.contains("Familia"));
+        chkMusica1.setSelected(categoriasVideo.contains("Musica"));
+        chkTecnologia1.setSelected(categoriasVideo.contains("Tecnologia"));
+        chkBelleza1.setSelected(categoriasVideo.contains("Belleza"));
+        chkCocina1.setSelected(categoriasVideo.contains("Cocina"));
+        chkVlog1.setSelected(categoriasVideo.contains("Vlog"));
+    }
+    
+    //Metodo para sobreescribir los ajustes que netbeans asigna automaticamente a tablas
+    private void alistarTabla() {
+        jTableListaVideos.setModel(new javax.swing.table.DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                    "", ""
+                }
+        ) {
+            Class[] types = new Class[]{
+                javax.swing.ImageIcon.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean[]{
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        jTableListaVideos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+
+        jTableListaVideos.setAutoscrolls(false);
+
+        jTableListaVideos.setColumnSelectionAllowed(true);
+
+        jTableListaVideos.setEditingColumn(0);
+
+        jTableListaVideos.setEditingRow(0);
+
+        jTableListaVideos.setMaximumSize(new java.awt.Dimension(290, 582));
+
+        jTableListaVideos.setMinimumSize(new java.awt.Dimension(290, 582));
+
+        jTableListaVideos.setRowHeight(63);
+
+        jTableListaVideos.setShowHorizontalLines(true);
+
+        jTableListaVideos.getTableHeader().setReorderingAllowed(false);
+
+        jTableListaVideos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        if (jTableListaVideos.getColumnModel().getColumnCount() > 0) {
+            jTableListaVideos.getColumnModel().getColumn(0).setResizable(false);
+            jTableListaVideos.getColumnModel().getColumn(0).setPreferredWidth(112);
+            jTableListaVideos.getColumnModel().getColumn(1).setResizable(false);
+            jTableListaVideos.getColumnModel().getColumn(1).setPreferredWidth(168);
+        }
+    }
+    
+    private void loadVideoList() {
+        ListaVideos.clear();
+        alistarTabla();
+        try (MongoCursor<GridFSFile> cursor = gridFSBucket.find().iterator()) {
+            while (cursor.hasNext()) {
+                GridFSFile file = cursor.next();
+                String filename = file.getFilename();
+                // Filter files based on video extensions
+                if (filename.toLowerCase().endsWith(".mp4")
+                        || filename.toLowerCase().endsWith(".avi")
+                        || filename.toLowerCase().endsWith(".mkv")
+                        || filename.toLowerCase().endsWith(".mov")
+                        || filename.toLowerCase().endsWith(".wmv")) {
+                    System.out.println(filtrarVideos(file.getObjectId()));
+                    if (filtrarVideos(file.getObjectId())){
+                        DefaultTableModel model = (DefaultTableModel) jTableListaVideos.getModel();
+                        ImageIcon icon = new ImageIcon(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
+                        Image img = icon.getImage().getScaledInstance(112, 63, java.awt.Image.SCALE_SMOOTH);
+                        ImageIcon newIcon = new ImageIcon(img);
+                        model.addRow(new Object[]{newIcon, obtenerTitulo(file.getObjectId())});
+                        ListaVideos.add(file.getObjectId());
+                    }
+                }
+            }
+        }
+    }
+    
+    private String obtenerTitulo(ObjectId fileID) {
+        String titulo = "";
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        titulo = videoDoc.getString("title");
+        return titulo;
+    }
+  
+    private File downloadImageFromGridFS(String filename) {
+        try {
+            GridFSFile gridFSFile = gridFSBucket.find(new org.bson.Document("filename", filename)).first();
+            if (gridFSFile != null) {
+                File tempFile = File.createTempFile("imagen", ".jpg");
+                tempFile.deleteOnExit();
+
+                try (GridFSDownloadStream downloadStream = gridFSBucket.openDownloadStream(gridFSFile.getObjectId()); FileOutputStream fileOutputStream = new FileOutputStream(tempFile)) {
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = downloadStream.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer, 0, bytesRead);
+                    }
+                }
+
+                return tempFile;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+ 
+    private String obtenerFilename(ObjectId fileID) {
+        String filename = "";
+        MongoCollection<Document> archivo = database.getCollection("fs.files");
+        Document videoDoc = archivo.find(Filters.and(
+                Filters.eq("_id", fileID)
+        )).first();
+        filename = videoDoc.getString("filename");
+        return filename;
+    }
+    
+    private ObjectId obtenerMiniId(ObjectId fileID) {
+        ObjectId miniId;
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        miniId = videoDoc.getObjectId("thumbnailId");
+        return miniId;
+    }
+    
+    private boolean filtrarVideos(ObjectId fileID){
+        boolean resultado = false;
+        MongoCollection<Document> video = database.getCollection("Videos");
+        Document videoDoc = video.find(Filters.and(
+                Filters.eq("videoId", fileID)
+        )).first();
+        if (videoDoc.getString("autor").toLowerCase().equals(Usuario.getString("nombre_canal").toLowerCase())){
+            resultado = true;
+        }
+        return resultado;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -486,19 +1031,38 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
     private javax.swing.JButton btnAplicarCambios;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JCheckBox chkBelleza;
+    private javax.swing.JCheckBox chkBelleza1;
     private javax.swing.JCheckBox chkCocina;
-    private javax.swing.JCheckBox chkFamilia;
+    private javax.swing.JCheckBox chkCocina1;
+    private javax.swing.JCheckBox chkComedia;
+    private javax.swing.JCheckBox chkComedia1;
     private javax.swing.JCheckBox chkMusica;
+    private javax.swing.JCheckBox chkMusica1;
     private javax.swing.JCheckBox chkPeliculas;
+    private javax.swing.JCheckBox chkPeliculas1;
     private javax.swing.JCheckBox chkTecnologia;
+    private javax.swing.JCheckBox chkTecnologia1;
     private javax.swing.JCheckBox chkVideojuegos;
+    private javax.swing.JCheckBox chkVideojuegos1;
     private javax.swing.JCheckBox chkVlog;
+    private javax.swing.JCheckBox chkVlog1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanelCategorias;
+    private javax.swing.JPanel jPanelCategorias1;
     private javax.swing.JPasswordField jPasswordField_Confirmar_ContraseñaUsuario;
     private javax.swing.JPasswordField jPasswordField_ContraseñaUsuario;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable jTableListaVideos;
+    private javax.swing.JTextArea jTextAreaDescripcion;
+    private javax.swing.JTextField jTextFieldTitulo;
     private javax.swing.JLabel lblCanal;
     private javax.swing.JLabel lblCategorias;
+    private javax.swing.JLabel lblCategorias1;
     private javax.swing.JLabel lblConfirmaContra;
     private javax.swing.JLabel lblContra;
     private javax.swing.JLabel lblCorreo;

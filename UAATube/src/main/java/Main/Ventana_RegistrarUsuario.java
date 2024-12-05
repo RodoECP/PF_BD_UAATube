@@ -69,12 +69,10 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jTextField_NombreCanal = new javax.swing.JTextField();
         jTextField_CorreoElectronico = new javax.swing.JTextField();
         jButton_RegistrarUsuario = new javax.swing.JButton();
-        jLabel_Registro_UAA = new javax.swing.JLabel();
         jPasswordField_Contraseña = new javax.swing.JPasswordField();
         jPasswordField_Contraseña_Confirmar = new javax.swing.JPasswordField();
         jLabel_Contraseña_Usuario = new javax.swing.JLabel();
         jLabel_Contraseña_Usuario1 = new javax.swing.JLabel();
-        jLabel_Icono_UAATube = new javax.swing.JLabel();
         jButton_Cancelar = new javax.swing.JButton();
         jButton_IniciaSesion = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -88,10 +86,13 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         chkCocina = new javax.swing.JCheckBox();
         chkBelleza = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel_Registro_UAA = new javax.swing.JLabel();
+        jLabel_Icono_UAATube = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel_RegistrarUsuario.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel_RegistrarUsuario.setBackground(new java.awt.Color(38, 38, 38));
 
         jTextField_NombreUsuario.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jTextField_NombreUsuario.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -120,17 +121,15 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             }
         });
 
+        jButton_RegistrarUsuario.setBackground(new java.awt.Color(22, 62, 100));
         jButton_RegistrarUsuario.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jButton_RegistrarUsuario.setForeground(new java.awt.Color(255, 255, 255));
         jButton_RegistrarUsuario.setText("Registrarse");
         jButton_RegistrarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_RegistrarUsuarioActionPerformed(evt);
             }
         });
-
-        jLabel_Registro_UAA.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
-        jLabel_Registro_UAA.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_Registro_UAA.setText("Registro UAA Tube");
 
         jPasswordField_Contraseña.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,9 +151,9 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jLabel_Contraseña_Usuario1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel_Contraseña_Usuario1.setText("Confirmar Contraseña");
 
-        jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
-
+        jButton_Cancelar.setBackground(new java.awt.Color(22, 62, 100));
         jButton_Cancelar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jButton_Cancelar.setForeground(new java.awt.Color(255, 255, 255));
         jButton_Cancelar.setText("Cancelar");
         jButton_Cancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -162,7 +161,9 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             }
         });
 
+        jButton_IniciaSesion.setBackground(new java.awt.Color(22, 62, 100));
         jButton_IniciaSesion.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jButton_IniciaSesion.setForeground(new java.awt.Color(255, 255, 255));
         jButton_IniciaSesion.setText("Inicia Sesión Aquí");
         jButton_IniciaSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,38 +171,48 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("¿Ya tienes cuenta?");
 
-        jPanelCategorias.setBackground(new java.awt.Color(29, 113, 150));
+        jPanelCategorias.setBackground(new java.awt.Color(33, 79, 154));
         jPanelCategorias.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanelCategorias.setForeground(new java.awt.Color(255, 255, 255));
         jPanelCategorias.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
 
         chkFamilia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkFamilia.setForeground(new java.awt.Color(255, 255, 255));
         chkFamilia.setText("Comedia");
 
         chkMusica.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkMusica.setForeground(new java.awt.Color(255, 255, 255));
         chkMusica.setText("Musica");
 
         chkPeliculas.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkPeliculas.setForeground(new java.awt.Color(255, 255, 255));
         chkPeliculas.setText("Peliculas");
 
         chkVideojuegos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVideojuegos.setForeground(new java.awt.Color(255, 255, 255));
         chkVideojuegos.setText("Videojuegos");
 
         chkVlog.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkVlog.setForeground(new java.awt.Color(255, 255, 255));
         chkVlog.setText("Vlog");
 
         chkTecnologia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkTecnologia.setForeground(new java.awt.Color(255, 255, 255));
         chkTecnologia.setText("Tecnología");
 
         chkCocina.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkCocina.setForeground(new java.awt.Color(255, 255, 255));
         chkCocina.setText("Cocina");
 
         chkBelleza.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        chkBelleza.setForeground(new java.awt.Color(255, 255, 255));
         chkBelleza.setText("Belleza");
 
         jLabel2.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Categorias");
 
         javax.swing.GroupLayout jPanelCategoriasLayout = new javax.swing.GroupLayout(jPanelCategorias);
@@ -252,6 +263,37 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        jPanel1.setBackground(new java.awt.Color(89, 89, 89));
+
+        jLabel_Registro_UAA.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel_Registro_UAA.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_Registro_UAA.setText("Registro UAA Tube");
+
+        jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel_Icono_UAATube)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_Registro_UAA)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_Icono_UAATube)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel_Registro_UAA)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel_RegistrarUsuarioLayout = new javax.swing.GroupLayout(jPanel_RegistrarUsuario);
         jPanel_RegistrarUsuario.setLayout(jPanel_RegistrarUsuarioLayout);
         jPanel_RegistrarUsuarioLayout.setHorizontalGroup(
@@ -261,10 +303,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                 .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
                         .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                                .addComponent(jLabel_Icono_UAATube)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel_Registro_UAA))
                             .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(jTextField_NombreCanal, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                                 .addComponent(jTextField_NombreUsuario)
@@ -295,17 +333,13 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addComponent(jButton_IniciaSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel_RegistrarUsuarioLayout.setVerticalGroup(
             jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel_RegistrarUsuarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel_Icono_UAATube)
-                    .addGroup(jPanel_RegistrarUsuarioLayout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel_Registro_UAA)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(44, 44, 44)
                 .addComponent(jTextField_NombreUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jTextField_NombreCanal, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -329,7 +363,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton_IniciaSesion)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -499,19 +533,30 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         }
     }
 
-    // Method to clear all the fields after successful registration
+    /**
+     * Método para limpiar todos los campos del formulario después de un
+     * registro exitoso. Este método restablece los campos de texto y las
+     * contraseñas a su estado vacío y restablece los bordes de los campos a su
+     * color predeterminado.
+     */
     private void clearFields() {
+        
         jTextField_NombreUsuario.setText("");
         jTextField_NombreCanal.setText("");
         jTextField_CorreoElectronico.setText("");
         jPasswordField_Contraseña.setText("");
         jPasswordField_Contraseña_Confirmar.setText("");
 
-        // Reset the border color of the fields back to the default color
+
         resetFieldBorders();
     }
 
-// Method to add focus listeners to fields and reset background color on input
+    /**
+     * Método para restablecer el color del borde de los campos de texto a su
+     * color predeterminado (gris). Este método es útil para restablecer la
+     * apariencia de los campos después de que hayan sido destacados por
+     * errores.
+     */
     private void resetFieldBorders() {
         jTextField_NombreUsuario.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         jTextField_NombreCanal.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -520,12 +565,22 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         jPasswordField_Contraseña_Confirmar.setBorder(BorderFactory.createLineBorder(Color.GRAY));
     }
 
-// Helper method to highlight the border of a field
+    /**
+     * Método auxiliar para resaltar el borde de un campo de entrada (JTextField
+     * o JPasswordField) cambiando su borde a color rojo.
+     *
+     * @param field El campo de entrada que se va a resaltar.
+     */
     private void highlightField(JComponent field) {
-        field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));// Red border with width of 2px
+        field.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
     }
 
-// Method to add focus listeners to fields and reset the border when user starts typing
+    /**
+     * Método para agregar oyentes de enfoque (focus listeners) a los campos del
+     * formulario. Cuando el usuario hace clic o enfoca un campo, se restablece
+     * el color del borde del campo y se verifica si el campo tiene contenido
+     * para ajustar su borde.
+     */
     private void addFocusListeners() {
         jTextField_NombreUsuario.addFocusListener(new FocusAdapter() {
             @Override
@@ -558,7 +613,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             }
         });
 
-        // Adding key listeners to check if the user starts typing
+
         addKeyListenerToField(jTextField_NombreUsuario);
         addKeyListenerToField(jTextField_NombreCanal);
         addKeyListenerToField(jTextField_CorreoElectronico);
@@ -566,7 +621,13 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         addKeyListenerToField(jPasswordField_Contraseña_Confirmar);
     }//GEN-LAST:event_jButton_RegistrarUsuarioActionPerformed
 
-    // Helper method to reset the color on focus (user clicks or types)
+    /**
+     * Método auxiliar para restablecer el color del borde de un campo cuando el
+     * usuario hace clic o comienza a escribir. Si el campo está resaltado en
+     * rojo y no está vacío, su borde se restablece a negro.
+     *
+     * @param field El campo que se está enfocando.
+     */
     private void resetFieldColorOnFocus(JComponent field) {
         if (field instanceof JTextField) {
             if (field.getBorder().toString().contains("RED") && !((JTextField) field).getText().trim().isEmpty()) {
@@ -579,7 +640,13 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         }
     }
 
-    // Method to add key listener for fields to check if input is entered
+    /**
+     * Método auxiliar para agregar un oyente de teclas (key listener) a un
+     * campo de entrada. Este listener se activa cuando el usuario comienza a
+     * escribir en el campo.
+     *
+     * @param field El campo al que se le agrega el oyente de teclas.
+     */
     private void addKeyListenerToField(JComponent field) {
         field.addKeyListener(new KeyAdapter() {
             @Override
@@ -589,16 +656,39 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         });
     }
 
+    /**
+     * Este método se ejecuta cuando el usuario interactúa con el campo de
+     * contraseña y presiona la tecla Enter o realiza otra acción. Se almacena
+     * el valor de la contraseña introducida en la variable `contraseña`.
+     *
+     * @param evt El evento de acción asociado al campo de contraseña.
+     */
     private void jPasswordField_ContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_ContraseñaActionPerformed
         // TODO add your handling code here:
         contraseña = new String(jPasswordField_Contraseña.getPassword());
     }//GEN-LAST:event_jPasswordField_ContraseñaActionPerformed
 
+    /**
+     * Este método se ejecuta cuando el usuario interactúa con el campo de
+     * confirmación de la contraseña y presiona la tecla Enter o realiza otra
+     * acción. Se almacena el valor de la contraseña confirmada en la variable
+     * `confirmarContraseña`.
+     *
+     * @param evt El evento de acción asociado al campo de confirmación de la
+     * contraseña.
+     */
     private void jPasswordField_Contraseña_ConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_Contraseña_ConfirmarActionPerformed
         // TODO add your handling code here:
         confirmarContraseña = new String(jPasswordField_Contraseña_Confirmar.getPassword());
     }//GEN-LAST:event_jPasswordField_Contraseña_ConfirmarActionPerformed
 
+    /**
+     * Este método se ejecuta cuando el usuario presiona el botón de cancelar.
+     * Dependiendo de la página de origen, se redirige al usuario a la página
+     * principal o se imprime información sobre la página de origen.
+     *
+     * @param evt El evento de acción asociado al botón de cancelar.
+     */
     private void jButton_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CancelarActionPerformed
         if (PaginaOrigen == "PaginaPrincipal") {
             VentanaPrincipal form = new VentanaPrincipal(null, database);
@@ -609,18 +699,35 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton_CancelarActionPerformed
 
+    /**
+     * Este método se ejecuta cuando el usuario presiona el botón de iniciar
+     * sesión. Abre la ventana de inicio de sesión.
+     *
+     * @param evt El evento de acción asociado al botón de iniciar sesión.
+     */
     private void jButton_IniciaSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_IniciaSesionActionPerformed
         Ventana_IniciarSesion form = new Ventana_IniciarSesion(PaginaOrigen, database);
         form.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton_IniciaSesionActionPerformed
 
+    /**
+     * Método para quitar el foco inicial de los campos de entrada en la
+     * interfaz. Solicita el foco en un componente no interactivo, como el panel
+     * principal, para evitar que el primer campo de texto sea automáticamente
+     * seleccionado.
+     */
     private void removeInitialFocus() {
-        // Request focus on a non-input component, such as the main panel
+
         jPanel_RegistrarUsuario.requestFocusInWindow();
     }
 
-// Method to add focus listener to clear a JTextField
+    /**
+     * Método para agregar un oyente de enfoque que limpia el texto de un campo
+     * cada vez que el usuario hace clic en él o lo enfoca.
+     *
+     * @param textField El campo de texto al que se le agregará el listener.
+     */
     private void addClearOnFocusListener(JTextField textField) {
         textField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
@@ -629,23 +736,30 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             }
         });
     }
-// Method to add focus listener to clear a JTextField and restore old value on focus lost
 
+    /**
+     * Método para agregar un comportamiento al campo de texto donde, al obtener
+     * el foco, se limpia el texto, pero si el campo se pierde el foco sin que
+     * el usuario ingrese un valor nuevo, se restaura el texto original.
+     *
+     * @param textField El campo de texto al que se le agregará este
+     * comportamiento.
+     */
     private void addFocusBehavior(JTextField textField) {
-        // Array to store the old value
+
         final String[] oldValue = {textField.getText()};
 
         textField.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent evt) {
-                // Store the current text before clearing
+
                 oldValue[0] = textField.getText();
                 textField.setText("");
             }
 
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
-                // If no new value is entered, restore the old value
+
                 if (textField.getText().isEmpty()) {
                     textField.setText(oldValue[0]);
                 }
@@ -653,6 +767,13 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         });
     }
 
+    /**
+     * Método para obtener una lista de categorías seleccionadas por el usuario.
+     * Verifica los checkboxes correspondientes a las categorías disponibles y
+     * las agrega a la lista.
+     *
+     * @return Una lista de categorías seleccionadas por el usuario.
+     */
     private List juntarCategorias() {
         List<String> categorias = new ArrayList<>();
         if (chkVideojuegos.isSelected()) {
@@ -682,8 +803,14 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
         return categorias;
     }
 
+    /**
+    * Inicializa los campos de texto (JTextField) aplicando el comportamiento de 
+    * enfoque definido en el método `addFocusBehavior`. Este comportamiento limpia 
+    * el campo de texto cuando el usuario lo enfoca y restaura el valor original 
+    * si el campo está vacío cuando pierde el foco.
+    */
     public void initializeFields() {
-        // Call the method for each JTextField
+
         addFocusBehavior(jTextField_NombreUsuario);
         addFocusBehavior(jTextField_NombreCanal);
         addFocusBehavior(jTextField_CorreoElectronico);
@@ -742,6 +869,7 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel_Contraseña_Usuario1;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JLabel jLabel_Registro_UAA;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanelCategorias;
     private javax.swing.JPanel jPanel_RegistrarUsuario;
     private javax.swing.JPasswordField jPasswordField_Contraseña;

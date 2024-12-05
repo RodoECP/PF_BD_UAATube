@@ -8,17 +8,28 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 /**
+ * Clase encargada de mostrar la ventana de comentarios de un video. Esta clase
+ * permite visualizar los comentarios asociados a un video específico en una
+ * interfaz gráfica.
  *
- * @author rodol
  */
 public class Ventana_Comentarios extends javax.swing.JFrame {
 
+    // Variables estáticas para almacenar el usuario actual, la base de datos y el video actual
     private static Document Usuario;
     private static MongoDatabase database;
     private static Document video;
 
     /**
-     * Creates new form Ventana_Comentarios
+     * Constructor de la clase Ventana_Comentarios. Este método inicializa los
+     * componentes de la ventana y carga los comentarios asociados al video.
+     *
+     * @param Usuario Documento que representa al usuario actual (probablemente
+     * información de usuario desde la base de datos).
+     * @param video Documento que representa al video del cual se mostrarán los
+     * comentarios.
+     * @param database Objeto MongoDatabase que representa la conexión a la base
+     * de datos MongoDB.
      */
     public Ventana_Comentarios(Document Usuario, Document video, MongoDatabase database) {
         initComponents();
@@ -28,6 +39,16 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
         loadComments();
     }
 
+    /**
+     * Método para cargar y mostrar los comentarios asociados al video. Este
+     * método obtiene los comentarios desde la colección "Comentarios" de la
+     * base de datos MongoDB y los muestra en una tabla en la interfaz gráfica.
+     * Se realiza una búsqueda utilizando el videoId del video seleccionado para
+     * filtrar los comentarios correspondientes.
+     *
+     * Si el video no está definido o no contiene un "videoId", muestra un
+     * mensaje de error.
+     */
     private void loadComments() {
         if (video == null || !video.containsKey("videoId")) {
             javax.swing.JOptionPane.showMessageDialog(this, "El video no está definido.", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
@@ -70,35 +91,32 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
         jTextArea_Comentarios = new javax.swing.JTextArea();
         jLabel_Comentario_Nuevo = new javax.swing.JLabel();
         jButton_Subir_Comentario = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        lblTitulo = new javax.swing.JLabel();
+        lblIcono = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel_Comentarios.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel_Comentarios.setBackground(new java.awt.Color(38, 38, 38));
 
+        jTable_Comentarios.setBackground(new java.awt.Color(33, 79, 154));
+        jTable_Comentarios.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jTable_Comentarios.setForeground(new java.awt.Color(255, 255, 255));
         jTable_Comentarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Usuario", "Comentario"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                true, true, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
+        jTable_Comentarios.setRowSelectionAllowed(false);
+        jTable_Comentarios.setSelectionForeground(new java.awt.Color(255, 255, 255));
+        jTable_Comentarios.setShowHorizontalLines(true);
         jScrollPane1.setViewportView(jTable_Comentarios);
-        if (jTable_Comentarios.getColumnModel().getColumnCount() > 0) {
-            jTable_Comentarios.getColumnModel().getColumn(2).setResizable(false);
-            jTable_Comentarios.getColumnModel().getColumn(3).setResizable(false);
-        }
 
         jTextArea_Comentarios.setColumns(20);
         jTextArea_Comentarios.setRows(5);
@@ -108,6 +126,7 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
         jLabel_Comentario_Nuevo.setForeground(new java.awt.Color(255, 255, 255));
         jLabel_Comentario_Nuevo.setText("Comentario Nuevo:");
 
+        jButton_Subir_Comentario.setBackground(new java.awt.Color(22, 62, 100));
         jButton_Subir_Comentario.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
         jButton_Subir_Comentario.setText("Subir");
         jButton_Subir_Comentario.addActionListener(new java.awt.event.ActionListener() {
@@ -116,6 +135,36 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
             }
         });
 
+        jPanel2.setBackground(new java.awt.Color(89, 89, 89));
+        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
+
+        lblTitulo.setFont(new java.awt.Font("Century Gothic", 0, 24)); // NOI18N
+        lblTitulo.setForeground(new java.awt.Color(255, 255, 255));
+        lblTitulo.setText("Administrar Cuenta");
+
+        lblIcono.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(lblIcono)
+                .addGap(18, 18, 18)
+                .addComponent(lblTitulo)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblIcono))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel_ComentariosLayout = new javax.swing.GroupLayout(jPanel_Comentarios);
         jPanel_Comentarios.setLayout(jPanel_ComentariosLayout);
         jPanel_ComentariosLayout.setHorizontalGroup(
@@ -123,33 +172,32 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
             .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
                 .addGroup(jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_Comentario_Nuevo)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addGroup(jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel_Comentario_Nuevo)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 451, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(39, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_ComentariosLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton_Subir_Comentario, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(207, 207, 207))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton_Subir_Comentario, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(49, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel_ComentariosLayout.setVerticalGroup(
             jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel_ComentariosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
+                        .addGap(12, 12, 12)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 672, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel_ComentariosLayout.createSequentialGroup()
+                        .addGap(65, 65, 65)
                         .addComponent(jLabel_Comentario_Nuevo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_Subir_Comentario, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(jButton_Subir_Comentario, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -166,6 +214,14 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método que maneja el evento de hacer clic en el botón para subir un
+     * comentario. Este método valida los datos ingresados por el usuario,
+     * obtiene la información necesaria, y guarda el comentario en la base de
+     * datos MongoDB.
+     *
+     * @param evt El evento de acción del botón (click) que activa este método.
+     */
     private void jButton_Subir_ComentarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Subir_ComentarioActionPerformed
         // TODO add your handling code here:
         if (video == null || !video.containsKey("videoId")) {
@@ -236,10 +292,13 @@ public class Ventana_Comentarios extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Subir_Comentario;
     private javax.swing.JLabel jLabel_Comentario_Nuevo;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel_Comentarios;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable_Comentarios;
     private javax.swing.JTextArea jTextArea_Comentarios;
+    private javax.swing.JLabel lblIcono;
+    private javax.swing.JLabel lblTitulo;
     // End of variables declaration//GEN-END:variables
 }

@@ -458,6 +458,11 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método de inicialización de los componentes. Este método configura las áreas de texto para 
+     * arrastrar y soltar archivos y los eventos de clic para cargar videos y miniaturas.
+     * También gestiona las acciones al cargar archivos.
+     */
     private void initComponents2(){
         txtCargarVideo.setDropTarget(new DropTarget() {
         public synchronized void drop(DropTargetDropEvent evt) {
@@ -505,15 +510,34 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         });
 
     }
-    
+  
+    /**
+     * Método que gestiona la acción de hacer clic en el campo para cargar el video.
+     * Abre el explorador de archivos para seleccionar un archivo de video.
+     * 
+     * @param evt El evento de clic en el campo de texto para cargar el video.
+     */
     private void txtCargarVideoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCargarVideoMouseClicked
         OpenFileViaExplorer("Video");
     }//GEN-LAST:event_txtCargarVideoMouseClicked
-
+    
+    /**
+     * Método que gestiona la acción de hacer clic en el campo para cargar la miniatura.
+     * Abre el explorador de archivos para seleccionar una miniatura.
+     * 
+     * @param evt El evento de clic en el campo de texto para cargar la miniatura.
+     */
     private void txtCargarMiniMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtCargarMiniMouseClicked
         OpenFileViaExplorer("Mini");
     }//GEN-LAST:event_txtCargarMiniMouseClicked
-
+     
+    /**
+     * Método que gestiona la acción de hacer clic en el botón de publicar.
+     * Verifica si los campos necesarios están completos y luego sube el video.
+     * Al finalizar, muestra un mensaje de confirmación y redirige a la ventana principal.
+     * 
+     * @param evt El evento de hacer clic en el botón de publicar.
+     */
     private void btnPublicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPublicarActionPerformed
         if(verificarCampos()){
             subirVideo();
@@ -530,6 +554,12 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
 
     }//GEN-LAST:event_txtCargarVideoPropertyChange
 
+    /**
+     * Método que gestiona la acción de hacer clic en el botón de cancelar.
+     * Redirige al usuario a la ventana principal si estaba en la página principal.
+     * 
+     * @param evt El evento de hacer clic en el botón de cancelar.
+     */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         if (PaginaOrigen == "PaginaPrincipal"){
             VentanaPrincipal form = new VentanaPrincipal(Usuario, database);
@@ -544,6 +574,12 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTituloActionPerformed
 
+    /**
+     * Método que abre el explorador de archivos y permite al usuario seleccionar
+     * un archivo de video o miniatura según el tipo proporcionado.
+     * 
+     * @param tipo El tipo de archivo que se va a cargar: "Video" o "Mini".
+     */
     public void OpenFileViaExplorer(String tipo)
     {
         try {
@@ -590,6 +626,10 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Método que sube el video y la miniatura al servidor de base de datos GridFS.
+     * Guarda la relación entre el video, miniatura y metadatos en la base de datos.
+     */
     private void subirVideo(){
         try {
             GridFSBucket gridFSBucket = GridFSBuckets.create(database);
@@ -622,6 +662,11 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Método que junta las categorías seleccionadas en una lista.
+     * 
+     * @return Una lista de categorías seleccionadas.
+     */
     private List juntarCategorias(){
         List<String> categorias = new ArrayList<>();
         if (chkVideojuegos.isSelected()){
@@ -651,6 +696,11 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         return categorias;
     }
 
+    /**
+     * Método que verifica si todos los campos necesarios para publicar un video están completos.
+     * 
+     * @return true si todos los campos están llenos; false en caso contrario.
+     */
     private boolean verificarCampos(){
         if (videoCargado == null|| 
                 miniCargado == null ||
