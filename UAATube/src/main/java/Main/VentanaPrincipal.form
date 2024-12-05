@@ -120,7 +120,6 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jPanel_ReproducirVideo" max="32767" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="103" alignment="1" groupAlignment="0" attributes="0">
                                               <Group type="102" attributes="0">
@@ -447,15 +446,17 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jComboBoxFiltros" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jTextField_BarraBusqueda" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
-                                      <Component id="jButtonBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="btnSubirVideo" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                                           <Component id="jLabel_OpcionCuenta1" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel_Diagonal" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel_OpcionCuenta2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="jComboBoxFiltros" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jTextField_BarraBusqueda" alignment="3" min="-2" pref="31" max="-2" attributes="0"/>
+                                          <Component id="jButtonBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="btnSubirVideo" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>

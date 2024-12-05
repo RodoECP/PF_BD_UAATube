@@ -9,6 +9,7 @@ import com.mongodb.client.model.Updates;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
+import static com.mongodb.client.model.Filters.eq;
 import java.awt.Image;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
@@ -134,7 +136,6 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
             form.setVisible(true);
             dispose();
         } else {
-            System.out.println(PaginaOrigen);
         }
     }
 
@@ -191,6 +192,7 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
         lblIcono = new javax.swing.JLabel();
+        jButtonBorrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -587,6 +589,17 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jButtonBorrar.setBackground(new java.awt.Color(153, 0, 0));
+        jButtonBorrar.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        jButtonBorrar.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonBorrar.setText("Borrar Video");
+        jButtonBorrar.setEnabled(false);
+        jButtonBorrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBorrarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -610,25 +623,24 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3)
+                            .addComponent(jScrollPane2)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanelCategorias1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(btnAplicarCambios)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancelar))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jScrollPane2)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanelCategorias1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 7, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButtonBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(13, Short.MAX_VALUE))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
@@ -677,10 +689,12 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jPanelCategorias1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnAplicarCambios, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnAplicarCambios, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButtonBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -797,6 +811,7 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         chkCocina1.setEnabled(true);
         chkComedia1.setEnabled(true);
         chkTecnologia1.setEnabled(true);
+        jButtonBorrar.setEnabled(true);
     }//GEN-LAST:event_jTableListaVideosMouseClicked
 
     private void jTextFieldTituloKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldTituloKeyTyped
@@ -824,6 +839,13 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         jPasswordField_Confirmar_ContraseñaUsuario.setEnabled(true);
     }//GEN-LAST:event_jPasswordField_ContraseñaUsuarioKeyTyped
 
+    private void jButtonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarActionPerformed
+        int confirmation = JOptionPane.showConfirmDialog(this, "ESTAS SEGURO QUE QUIERES BORRAR EL VIDEO?", "Confirmación", JOptionPane.YES_NO_OPTION);
+        if (confirmation == JOptionPane.YES_OPTION) {
+            borrarVideo();
+        }
+    }//GEN-LAST:event_jButtonBorrarActionPerformed
+
     //Metodo para cargar los datos del video que fue seleccionado
     private void cargarDatos(ObjectId fileID) {
         MongoCollection<Document> video = database.getCollection("Videos");
@@ -835,6 +857,21 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         llenarChkVideo(videoDoc);
     }
 
+    public void borrarVideo(){
+        MongoCollection<Document> collection = database.getCollection("Videos");
+        Document videoDoc = collection.find(Filters.and(
+                Filters.eq("videoId", Video)
+        )).first();
+        ObjectId img = videoDoc.getObjectId("thumbnailId");
+        Bson query = eq("videoId", Video);
+        collection.deleteOne(query);
+        GridFSBucket bucket = GridFSBuckets.create(database);
+        bucket.delete(img);
+        bucket.delete(Video);
+        JOptionPane.showMessageDialog(this, "El video ha sido borrado.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        cerrarVentana();
+    }
+    
     public void llenarChkVideo(Document video){
         List<String> categoriasVideo = video.getList("categorias", String.class);
         chkVideojuegos1.setSelected(categoriasVideo.contains("Videojuegos"));
@@ -913,7 +950,6 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
                         || filename.toLowerCase().endsWith(".mkv")
                         || filename.toLowerCase().endsWith(".mov")
                         || filename.toLowerCase().endsWith(".wmv")) {
-                    System.out.println(filtrarVideos(file.getObjectId()));
                     if (filtrarVideos(file.getObjectId())){
                         DefaultTableModel model = (DefaultTableModel) jTableListaVideos.getModel();
                         ImageIcon icon = new ImageIcon(downloadImageFromGridFS(obtenerFilename(obtenerMiniId(file.getObjectId()))).toString());
@@ -1046,6 +1082,7 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkVideojuegos1;
     private javax.swing.JCheckBox chkVlog;
     private javax.swing.JCheckBox chkVlog1;
+    private javax.swing.JButton jButtonBorrar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
