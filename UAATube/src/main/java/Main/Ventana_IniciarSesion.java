@@ -272,7 +272,6 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
                     Filters.eq("nombre_usuario", usuario),
                     Filters.eq("contraseña", contraseña)
             )).first();
-            System.out.println(usuarioDoc);
             if (usuarioDoc != null) {
                 JOptionPane.showMessageDialog(this, "Inicio de sesión exitoso.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 Usuario = usuarioDoc;
@@ -408,7 +407,6 @@ public class Ventana_IniciarSesion extends javax.swing.JFrame {
             form.setVisible(true);
             dispose();
         } else {
-            System.out.println(PaginaOrigen);
         }
     }
 

@@ -695,7 +695,6 @@ public class Ventana_RegistrarUsuario extends javax.swing.JFrame {
             form.setVisible(true);
             this.dispose();
         } else {
-            System.out.println(PaginaOrigen);
         }
     }//GEN-LAST:event_jButton_CancelarActionPerformed
 

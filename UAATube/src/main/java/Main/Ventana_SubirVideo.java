@@ -98,14 +98,17 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         lblCargarMini = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
         jLabel_Icono_UAATube = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setForeground(new java.awt.Color(29, 113, 150));
 
-        jPanel6.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel6.setBackground(new java.awt.Color(38, 38, 38));
+        jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel1.setBackground(new java.awt.Color(33, 79, 154));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
 
@@ -144,33 +147,41 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         lblInstruccion.setText("Llena la informacion de tu video");
         lblInstruccion.setName("lblQueHacer"); // NOI18N
 
-        jPanel5.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel5.setBackground(new java.awt.Color(33, 79, 154));
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel5.setForeground(new java.awt.Color(255, 255, 255));
         jPanel5.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
 
         chkFamilia.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkFamilia.setForeground(new java.awt.Color(255, 255, 255));
         chkFamilia.setText("Comedia");
 
         chkMusica.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkMusica.setForeground(new java.awt.Color(255, 255, 255));
         chkMusica.setText("Musica");
 
         chkPeliculas.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkPeliculas.setForeground(new java.awt.Color(255, 255, 255));
         chkPeliculas.setText("Peliculas");
 
         chkVideojuegos.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkVideojuegos.setForeground(new java.awt.Color(255, 255, 255));
         chkVideojuegos.setText("Videojuegos");
 
         chkVlog.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkVlog.setForeground(new java.awt.Color(255, 255, 255));
         chkVlog.setText("Vlog");
 
         chkTecnologia.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkTecnologia.setForeground(new java.awt.Color(255, 255, 255));
         chkTecnologia.setText("Tecnología");
 
         chkCocina.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkCocina.setForeground(new java.awt.Color(255, 255, 255));
         chkCocina.setText("Cocina");
 
         chkBelleza.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
+        chkBelleza.setForeground(new java.awt.Color(255, 255, 255));
         chkBelleza.setText("Belleza");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -262,10 +273,14 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                 .addGap(287, 287, 287))
         );
 
-        jPanel2.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel6.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 110, -1, 330));
+
+        jPanel2.setBackground(new java.awt.Color(33, 79, 154));
         jPanel2.setFont(new java.awt.Font("Century Gothic", 0, 12)); // NOI18N
 
+        btnPublicar.setBackground(new java.awt.Color(22, 62, 100));
         btnPublicar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnPublicar.setForeground(new java.awt.Color(255, 255, 255));
         btnPublicar.setText("Publicar Video");
         btnPublicar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,7 +288,9 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
             }
         });
 
+        btnCancelar.setBackground(new java.awt.Color(22, 62, 100));
         btnCancelar.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
+        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -302,7 +319,9 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jPanel3.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel6.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 510, -1, -1));
+
+        jPanel3.setBackground(new java.awt.Color(33, 79, 154));
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         txtCargarVideo.setEditable(false);
@@ -355,7 +374,9 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
-        jPanel4.setBackground(new java.awt.Color(29, 113, 150));
+        jPanel6.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, -1, -1));
+
+        jPanel4.setBackground(new java.awt.Color(33, 79, 154));
         jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         txtCargarMini.setEditable(false);
@@ -403,46 +424,20 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
+        jPanel6.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 340, -1, -1));
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(36, 36, 36)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel_Icono_UAATube)))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(331, 331, 331)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(99, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(9, 9, 9))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)
-                        .addComponent(jLabel_Icono_UAATube)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jPanel7.setBackground(new java.awt.Color(89, 89, 89));
+        jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel_Icono_UAATube.setIcon(new javax.swing.ImageIcon(getClass().getResource("/UAATube Icon 150x92.png"))); // NOI18N
+        jPanel7.add(jLabel_Icono_UAATube, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        jLabel1.setFont(new java.awt.Font("Century Gothic", 0, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Sube un Video");
+        jPanel7.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 16, 190, 50));
+
+        jPanel6.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 840, 80));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -452,7 +447,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 585, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -566,7 +561,6 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
             form.setVisible(true);
             this.dispose();
         } else {
-            System.out.println(PaginaOrigen);
         }
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -638,12 +632,10 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                 File video = new File(videoCargado);
                 String videoFileName = video.getName();
                 ObjectId videoId = gridFSBucket.uploadFromStream(videoFileName, videoStream);
-                System.out.println("Video subido con éxito: " + videoFileName);
                 
                 File mini = new File(miniCargado);
                 String thumbnailFileName = mini.getName();
                 ObjectId miniId = gridFSBucket.uploadFromStream(thumbnailFileName, miniStream);
-                System.out.println("Miniatura subida con éxito: " + thumbnailFileName);
                 
                 List<String> categorias = juntarCategorias();
                 Document videoMetadata = new Document()
@@ -655,7 +647,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                         .append("categorias", categorias)
                         .append("me_gusta", 0);
                 database.getCollection("Videos").insertOne(videoMetadata);
-                System.out.println("Relacion entre video y miniatura guardada.");
+                JOptionPane.showMessageDialog(this, "Su video se ha subido.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (IOException ex) {
             Logger.getLogger(Ventana_SubirVideo.class.getName()).log(Level.SEVERE, null, ex);
@@ -758,6 +750,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkTecnologia;
     private javax.swing.JCheckBox chkVideojuegos;
     private javax.swing.JCheckBox chkVlog;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Icono_UAATube;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -765,6 +758,7 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
