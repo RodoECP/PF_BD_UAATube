@@ -647,7 +647,6 @@ public class Ventana_SubirVideo extends javax.swing.JFrame {
                         .append("categorias", categorias)
                         .append("me_gusta", 0);
                 database.getCollection("Videos").insertOne(videoMetadata);
-                JOptionPane.showMessageDialog(this, "Su video se ha subido.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (IOException ex) {
             Logger.getLogger(Ventana_SubirVideo.class.getName()).log(Level.SEVERE, null, ex);

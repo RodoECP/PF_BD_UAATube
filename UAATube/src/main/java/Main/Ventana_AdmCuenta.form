@@ -301,6 +301,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Comedia"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkComediaMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkMusica">
               <Properties>
@@ -312,6 +315,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Musica"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkMusicaMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkPeliculas">
               <Properties>
@@ -323,6 +329,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Peliculas"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkPeliculasMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkVideojuegos">
               <Properties>
@@ -334,6 +343,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Videojuegos"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkVideojuegosMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkVlog">
               <Properties>
@@ -345,6 +357,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Vlog"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkVlogMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkTecnologia">
               <Properties>
@@ -356,6 +371,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Tecnolog&#xed;a"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkTecnologiaMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkCocina">
               <Properties>
@@ -367,6 +385,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cocina"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkCocinaMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkBelleza">
               <Properties>
@@ -378,6 +399,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Belleza"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkBellezaMouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblCategorias">
               <Properties>
@@ -678,6 +702,9 @@
                 <Property name="text" type="java.lang.String" value="Comedia"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkComedia1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkMusica1">
               <Properties>
@@ -690,6 +717,9 @@
                 <Property name="text" type="java.lang.String" value="Musica"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkMusica1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkPeliculas1">
               <Properties>
@@ -702,6 +732,9 @@
                 <Property name="text" type="java.lang.String" value="Peliculas"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkPeliculas1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkVideojuegos1">
               <Properties>
@@ -714,6 +747,9 @@
                 <Property name="text" type="java.lang.String" value="Videojuegos"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkVideojuegos1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkVlog1">
               <Properties>
@@ -726,6 +762,9 @@
                 <Property name="text" type="java.lang.String" value="Vlog"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkVlog1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkTecnologia1">
               <Properties>
@@ -738,6 +777,9 @@
                 <Property name="text" type="java.lang.String" value="Tecnolog&#xed;a"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkTecnologia1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkCocina1">
               <Properties>
@@ -750,6 +792,9 @@
                 <Property name="text" type="java.lang.String" value="Cocina"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkCocina1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chkBelleza1">
               <Properties>
@@ -762,6 +807,9 @@
                 <Property name="text" type="java.lang.String" value="Belleza"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chkBelleza1MouseClicked"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblCategorias1">
               <Properties>

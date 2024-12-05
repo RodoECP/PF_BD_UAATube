@@ -244,34 +244,74 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         chkComedia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkComedia.setForeground(new java.awt.Color(255, 255, 255));
         chkComedia.setText("Comedia");
+        chkComedia.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkComediaMouseClicked(evt);
+            }
+        });
 
         chkMusica.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkMusica.setForeground(new java.awt.Color(255, 255, 255));
         chkMusica.setText("Musica");
+        chkMusica.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkMusicaMouseClicked(evt);
+            }
+        });
 
         chkPeliculas.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkPeliculas.setForeground(new java.awt.Color(255, 255, 255));
         chkPeliculas.setText("Peliculas");
+        chkPeliculas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkPeliculasMouseClicked(evt);
+            }
+        });
 
         chkVideojuegos.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkVideojuegos.setForeground(new java.awt.Color(255, 255, 255));
         chkVideojuegos.setText("Videojuegos");
+        chkVideojuegos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkVideojuegosMouseClicked(evt);
+            }
+        });
 
         chkVlog.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkVlog.setForeground(new java.awt.Color(255, 255, 255));
         chkVlog.setText("Vlog");
+        chkVlog.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkVlogMouseClicked(evt);
+            }
+        });
 
         chkTecnologia.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkTecnologia.setForeground(new java.awt.Color(255, 255, 255));
         chkTecnologia.setText("Tecnología");
+        chkTecnologia.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkTecnologiaMouseClicked(evt);
+            }
+        });
 
         chkCocina.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkCocina.setForeground(new java.awt.Color(255, 255, 255));
         chkCocina.setText("Cocina");
+        chkCocina.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkCocinaMouseClicked(evt);
+            }
+        });
 
         chkBelleza.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkBelleza.setForeground(new java.awt.Color(255, 255, 255));
         chkBelleza.setText("Belleza");
+        chkBelleza.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkBellezaMouseClicked(evt);
+            }
+        });
 
         lblCategorias.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCategorias.setForeground(new java.awt.Color(255, 255, 255));
@@ -471,41 +511,81 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
         chkComedia1.setForeground(new java.awt.Color(255, 255, 255));
         chkComedia1.setText("Comedia");
         chkComedia1.setEnabled(false);
+        chkComedia1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkComedia1MouseClicked(evt);
+            }
+        });
 
         chkMusica1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkMusica1.setForeground(new java.awt.Color(255, 255, 255));
         chkMusica1.setText("Musica");
         chkMusica1.setEnabled(false);
+        chkMusica1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkMusica1MouseClicked(evt);
+            }
+        });
 
         chkPeliculas1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkPeliculas1.setForeground(new java.awt.Color(255, 255, 255));
         chkPeliculas1.setText("Peliculas");
         chkPeliculas1.setEnabled(false);
+        chkPeliculas1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkPeliculas1MouseClicked(evt);
+            }
+        });
 
         chkVideojuegos1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkVideojuegos1.setForeground(new java.awt.Color(255, 255, 255));
         chkVideojuegos1.setText("Videojuegos");
         chkVideojuegos1.setEnabled(false);
+        chkVideojuegos1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkVideojuegos1MouseClicked(evt);
+            }
+        });
 
         chkVlog1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkVlog1.setForeground(new java.awt.Color(255, 255, 255));
         chkVlog1.setText("Vlog");
         chkVlog1.setEnabled(false);
+        chkVlog1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkVlog1MouseClicked(evt);
+            }
+        });
 
         chkTecnologia1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkTecnologia1.setForeground(new java.awt.Color(255, 255, 255));
         chkTecnologia1.setText("Tecnología");
         chkTecnologia1.setEnabled(false);
+        chkTecnologia1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkTecnologia1MouseClicked(evt);
+            }
+        });
 
         chkCocina1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkCocina1.setForeground(new java.awt.Color(255, 255, 255));
         chkCocina1.setText("Cocina");
         chkCocina1.setEnabled(false);
+        chkCocina1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkCocina1MouseClicked(evt);
+            }
+        });
 
         chkBelleza1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         chkBelleza1.setForeground(new java.awt.Color(255, 255, 255));
         chkBelleza1.setText("Belleza");
         chkBelleza1.setEnabled(false);
+        chkBelleza1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                chkBelleza1MouseClicked(evt);
+            }
+        });
 
         lblCategorias1.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         lblCategorias1.setForeground(new java.awt.Color(255, 255, 255));
@@ -845,6 +925,70 @@ public class Ventana_AdmCuenta extends javax.swing.JFrame {
             borrarVideo();
         }
     }//GEN-LAST:event_jButtonBorrarActionPerformed
+
+    private void chkVideojuegosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkVideojuegosMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkVideojuegosMouseClicked
+
+    private void chkMusicaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkMusicaMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkMusicaMouseClicked
+
+    private void chkComediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkComediaMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkComediaMouseClicked
+
+    private void chkPeliculasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkPeliculasMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkPeliculasMouseClicked
+
+    private void chkTecnologiaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkTecnologiaMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkTecnologiaMouseClicked
+
+    private void chkCocinaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkCocinaMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkCocinaMouseClicked
+
+    private void chkBellezaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkBellezaMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkBellezaMouseClicked
+
+    private void chkVlogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkVlogMouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkVlogMouseClicked
+
+    private void chkVideojuegos1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkVideojuegos1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkVideojuegos1MouseClicked
+
+    private void chkMusica1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkMusica1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkMusica1MouseClicked
+
+    private void chkComedia1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkComedia1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkComedia1MouseClicked
+
+    private void chkPeliculas1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkPeliculas1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkPeliculas1MouseClicked
+
+    private void chkTecnologia1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkTecnologia1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkTecnologia1MouseClicked
+
+    private void chkCocina1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkCocina1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkCocina1MouseClicked
+
+    private void chkBelleza1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkBelleza1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkBelleza1MouseClicked
+
+    private void chkVlog1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chkVlog1MouseClicked
+        btnAplicarCambios.setEnabled(true);         // TODO add your handling code here:
+    }//GEN-LAST:event_chkVlog1MouseClicked
 
     //Metodo para cargar los datos del video que fue seleccionado
     private void cargarDatos(ObjectId fileID) {
