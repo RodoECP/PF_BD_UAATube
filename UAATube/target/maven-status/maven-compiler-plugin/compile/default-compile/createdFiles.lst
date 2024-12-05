@@ -16,6 +16,7 @@ Main\Ventana_IniciarSesion$6.class
 Main\VentanaPrincipal$12.class
 Main\VentanaPrincipal$3.class
 Main\Ventana_RegistrarUsuario$7.class
+Main\Ventana_Comentarios.class
 Main\Ventana_RegistrarUsuario$5.class
 Main\Ventana_SubirVideo$7.class
 Main\Ventana_RegistrarUsuario$14.class
@@ -25,9 +26,11 @@ Main\VentanaPrincipal$6.class
 Main\Ventana_AdmCuenta$3.class
 Main\Ventana_SubirVideo$3.class
 Main\Ventana_AdmCuenta$7.class
+Main\Ventana_Comentarios$1.class
 Main\Ventana_IniciarSesion$2.class
 Main\Ventana_RegistrarUsuario$11.class
 Main\Ventana_RegistrarUsuario$1.class
+Main\VentanaPrincipal$18.class
 Main\VentanaPrincipal$13.class
 Main\Ventana_RegistrarUsuario$10.class
 Main\VentanaPrincipal$7.class
